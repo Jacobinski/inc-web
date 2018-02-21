@@ -7,8 +7,10 @@
     "url": "git+https://github.com/Jacobinski/inc-web.git"
   },
   "scripts": {
-    "build": "babel src -d lib",
-    "prepublish": "npm run build"
+    "build": "babel src -d lib"
+  },
+  "dependencies": {
+    "react": "^15.6.2"
   },
   "devDependencies": {
     "webpack": "^2.1.0",
@@ -18,6 +20,9 @@
     "babel-loader": "^6.1.0",
     "babel-preset-react": "^6.0.0",
     "react-material-design": "^0.3.6"
+  },
+  "peerDependencies": {
+    "react": "^15.6.2"
   },
   "babel": {
     "presets": [
@@ -29,8 +34,5 @@
     "url": "https://github.com/Jacobinski/inc-web/issues"
   },
   "homepage": "https://github.com/Jacobinski/inc-web#readme",
-  "author": "Rahat Dhande",
-  "dependencies": {
-    "react": "latest"
-  }
+  "author": "Rahat Dhande"
 }
