@@ -10,8 +10,13 @@
     "build": "babel src -d lib"
   },
   "devDependencies": {
+    "webpack": "^2.1.0",
+    "express": "^4.16.2",
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1"
+    "babel-preset-env": "^1.6.1",
+    "babel-loader": "^6.1.0",
+    "babel-preset-react": "^6.0.0",
+    "react-material-design": "^0.3.6"
   },
   "babel": {
     "presets": [
@@ -23,9 +28,5 @@
     "url": "https://github.com/Jacobinski/inc-web/issues"
   },
   "homepage": "https://github.com/Jacobinski/inc-web#readme",
-  "author": "Rahat Dhande",
-  "license": "ISC",
-  "dependencies": {
-    "react-material-design": "^0.3.6"
-  }
+  "author": "Rahat Dhande"
 }
