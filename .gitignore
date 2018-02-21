@@ -52,6 +52,7 @@ crashlytics-build.properties
 fabric.properties
 
 ### Node.js ###
+lib
 # Logs
 logs
 *.log
