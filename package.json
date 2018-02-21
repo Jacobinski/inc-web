@@ -7,7 +7,8 @@
     "url": "git+https://github.com/Jacobinski/inc-web.git"
   },
   "scripts": {
-    "build": "babel src -d lib"
+    "build": "babel src -d lib",
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "webpack": "^2.1.0",
