@@ -1,5 +1,5 @@
 import express from 'express';
-import React, {Component} from 'react';
+import React from 'react';
 
 const app = express();
 const PORT = 8080;

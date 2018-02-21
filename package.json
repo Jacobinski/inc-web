@@ -28,5 +28,8 @@
     "url": "https://github.com/Jacobinski/inc-web/issues"
   },
   "homepage": "https://github.com/Jacobinski/inc-web#readme",
-  "author": "Rahat Dhande"
+  "author": "Rahat Dhande",
+  "dependencies": {
+    "react": "latest"
+  }
 }
