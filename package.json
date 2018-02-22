@@ -7,19 +7,25 @@
     "url": "git+https://github.com/Jacobinski/inc-web.git"
   },
   "scripts": {
+    "start": "nodemon src/server/index.js",
+    "webpack": "./node_modules/.bin/webpack -w",
     "build": "babel src -d lib"
   },
   "dependencies": {
     "react": "^15.6.2"
   },
   "devDependencies": {
-    "webpack": "^2.1.0",
-    "express": "^4.16.2",
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
     "babel-loader": "^6.1.0",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.0.0",
-    "react-material-design": "^0.3.6"
+    "css-loader": "^0.28.9",
+    "express": "^4.16.2",
+    "node-sass": "^4.7.2",
+    "react-material-design": "^0.3.6",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.20.2",
+    "webpack": "^2.7.0"
   },
   "peerDependencies": {
     "react": "^15.6.2"
