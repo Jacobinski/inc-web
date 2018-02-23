@@ -6,7 +6,7 @@ var APP_DIR = path.resolve(__dirname, './src/client');
 
 const config = {
     entry: {
-        main: APP_DIR + '/index.js'
+        main: APP_DIR + '/client.js'
     },
     output: {
         filename: 'bundle.js',
@@ -30,7 +30,7 @@ const config = {
                     loader: "babel-loader",
                     options: {
                         cacheDirectory: true,
-                        presets: ['react', 'es2015'] // Transpiles JSX and ES6
+                        presets: ['react', 'env'] // Transpiles JSX and ES6
                     }
                 }]
             }
