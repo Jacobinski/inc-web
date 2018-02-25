@@ -4,7 +4,7 @@ import React from 'react';
 const router = express.Router();
 
 router.get('/', (request, response) => {
-    response.send('index');
+    response.sendFile('index.html');
 });
 
 export default router;
