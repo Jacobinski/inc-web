@@ -1,5 +1,5 @@
 import React from 'react';
-import {HashRouter, NavLink, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Link, Route} from 'react-router-dom';
 import Planner from './Planner.jsx';
 import Feed from './Feed.jsx';
 import Profile from './Profile.jsx';
@@ -14,12 +14,12 @@ const VIEWS = [
 export default class App extends Component {
     render() {
         return (
-            <HashRouter>
+            <Router>
                 <div>
                     <h1>increment</h1>
                     <ul className="header">
                         {VIEWS.map(
-                            view => <li key={view.id}><NavLink to={view.path}>{view.title}</NavLink></li>
+                            view => <li key={view.id}><Link to={view.path}>{view.title}</Link></li>
                         )}
                     </ul>
                     <div className="content">
@@ -28,7 +28,7 @@ export default class App extends Component {
                         )}
                     </div>
                 </div>
-            </HashRouter>
+            </Router>
         );
     }
 }
