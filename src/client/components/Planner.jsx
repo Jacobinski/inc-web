@@ -1,24 +1,30 @@
 import React from "react";
+import "whatwg-fetch";
 const {Component} = React;
 
 export default class Planner extends Component {
-    componentDidMount() {
-
+    constructor(props) {
+        super(props);
+        this.state = {content: 'Loading'};
     }
+
+    componentWillMount() {
+        fetch('/planner')
+            .then(response => response.text())
+            .then((data) => {
+                this.setState({content: data});
+            })
+            .catch((error) => {
+                console.log(error);
+                this.setState({content: 'There was an error.'})
+            })
+    }
+
     render() {
         return (
             <div>
                 <h2>Planner</h2>
-                <p>
-                    Cras facilisis urna ornare ex volutpat, et
-                    convallis erat elementum. Ut aliquam, ipsum vitae
-                    gravida suscipit, metus dui bibendum est, eget rhoncus nibh
-                    metus nec massa. Maecenas hendrerit laoreet augue
-                    nec molestie. Cum sociis natoque penatibus et magnis
-                    dis parturient montes, nascetur ridiculus mus.
-                </p>
-
-                <p>Duis a turpis sed lacus dapibus elementum sed eu lectus.</p>
+                <p>{this.state.content}</p>
             </div>
         );
     }

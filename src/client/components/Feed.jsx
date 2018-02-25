@@ -2,18 +2,28 @@ import React from "react";
 const {Component} = React;
 
 export default class Feed extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {content: 'Loading'};
+    }
+
+    componentWillMount() {
+        fetch('/feed')
+            .then(response => response.text())
+            .then((data) => {
+                this.setState({content: data});
+            })
+            .catch((error) => {
+                console.log(error);
+                this.setState({content: 'There was an error.'})
+            })
+    }
+
     render() {
         return (
             <div>
                 <h2>Feed</h2>
-                <p>Mauris sem velit, vehicula eget sodales vitae, rhoncus eget sapien:</p>
-                <ol>
-                    <li>Nulla pulvinar diam</li>
-                    <li>Facilisis bibendum</li>
-                    <li>Vestibulum vulputate</li>
-                    <li>Eget erat</li>
-                    <li>Id porttitor</li>
-                </ol>
+                <p>{this.state.content}</p>
             </div>
         );
     }
