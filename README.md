@@ -1,7 +1,7 @@
 # Increment Fitness
 ### _Web Client_
 
-Single Page Web Application built on node.  
+Single Page Web Application built using React.  
 - install [node](https://nodejs.org/en/) (version ^9.5)
 - install nodemon globally `npm install -g nodemon`
 - install dependencies `npm install`
