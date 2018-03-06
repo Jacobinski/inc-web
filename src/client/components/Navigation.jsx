@@ -55,7 +55,7 @@ export class Navbar extends Component {
         return (
             <div>
                 <nav>
-                    <div className="nav-wrapper">
+                    <div className="nav-wrapper container">
                         <a href="/" className="brand-logo">increment</a>
                         <a href="#" data-target="mobile-sidenav" className="sidenav-trigger">
                             <i className="material-icons">menu</i>
@@ -77,7 +77,7 @@ export class Navbar extends Component {
 export class Content extends Component {
     render() {
         return (
-            <div className="">
+            <div className="container">
                 {VIEWS.map(view =>
                     <Route key={view.id} path={view.path} component={view.component}/>
                 )}
