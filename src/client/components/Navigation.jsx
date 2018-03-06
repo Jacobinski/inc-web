@@ -3,6 +3,8 @@ import {Link, Route} from 'react-router-dom';
 import Planner from './Planner.jsx';
 import Feed from './Feed.jsx';
 import Profile from './Profile.jsx';
+//noinspection JSUnresolvedVariable
+import {Sidenav} from 'materialize-css';
 
 const {Component} = React;
 const VIEWS = [
@@ -17,7 +19,12 @@ export class Navbar extends Component {
         this.state = {activeTab: null};
     }
 
-    _views(mobile=false) {
+    componentDidMount() {
+        let elem = document.querySelector('.sidenav');
+        Sidenav.init(elem);
+    }
+
+    _views(mobile = false) {
         return VIEWS.map(
             view =>
                 <li key={view.id}
