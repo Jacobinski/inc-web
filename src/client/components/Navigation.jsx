@@ -1,8 +1,8 @@
-import React from "react";
-import {Link, Route} from "react-router-dom";
-import Planner from "./Planner.jsx";
-import Feed from "./Feed.jsx";
-import Profile from "./Profile.jsx";
+import React from 'react';
+import {Link, Route} from 'react-router-dom';
+import Planner from './Planner.jsx';
+import Feed from './Feed.jsx';
+import Profile from './Profile.jsx';
 
 const {Component} = React;
 const VIEWS = [

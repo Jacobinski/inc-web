@@ -1,5 +1,5 @@
-import React from "react";
-import "whatwg-fetch";
+import React from 'react';
+import 'whatwg-fetch';
 const {Component} = React;
 
 export default class Planner extends Component {
