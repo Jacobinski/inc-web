@@ -1,0 +1,21 @@
+div.scroll-menu {
+  overflow-x: scroll;
+  white-space: nowrap;
+}
+
+div.scroll-menu .scroll-menu-item {
+  display: inline-flex;
+  margin-left: 1em;
+}
+
+.calendar {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border-style: none;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.react-calendar__tile.active {
+  background: #a5c6e7;
+}
