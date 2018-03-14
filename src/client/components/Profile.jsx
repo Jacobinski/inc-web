@@ -1,5 +1,6 @@
 import React from "react";
 import Calendar from "react-calendar";
+import Chart from "chart.js";
 
 const {Component} = React;
 
@@ -37,8 +38,7 @@ export default class Profile extends Component {
     }
 
     _selectDate(date) {
-        this.setState({date});
-        this.setState({dayData: []});
+        this.setState({date, dayData: []});
 
         for (let entry of this.state.monthData) {
             if (entry.date.getTime() == date.getTime()) {
@@ -52,7 +52,7 @@ export default class Profile extends Component {
             <div>
                 <h2>Profile</h2>
                 <div className="row">
-                    <div className="col s12 m6">
+                    <div className="col s12 m6 center">
                         <Calendar className="calendar"
                                   onChange={this._selectDate}
                                   value={this.state.date}
@@ -66,11 +66,10 @@ export default class Profile extends Component {
                                               }
                                           }
                                       }
-                                  }
-                                  }
+                                  }}
                         />
                     </div>
-                    <div className="col s12 m6">
+                    <div className="col s12 m6 center">
                         <WorkoutData data={this.state.dayData}/>
                     </div>
                 </div>
@@ -83,26 +82,72 @@ class WorkoutData extends Component {
     render() {
         return (
             <div className="scroll-menu">
-                {this.props.data.map(
-                    (tile, index) => {
-                        return (
-                            <div key={index} className="scroll-menu-item">
-                                <div className="card small">
-                                    <div className="card-image">
-                                        <img
-                                            src="https://2.bp.blogspot.com/-mTfV6tVwLmk/T_cmGXLUfQI/AAAAAAAAXxU/jshgTwx2yPk/s1600/292679045.jpg"/>
-                                        <span className="card-title">{tile.exercise}</span>
-                                    </div>
-                                    <div className="card-content">
-                                        Reps: {tile.reps.map(rep => `${rep}, `)}
-                                        Weights: {tile.weights.map(weight => `${weight}, `)}
+                { (this.props.data.length > 0) ? this.props.data.map(
+                        (tile, index) => {
+                            return (
+                                <div key={index} className="scroll-menu-item">
+                                    <div className="card small">
+                                        <div className="card-content">
+                                            <span className="card-title">{tile.exercise}</span>
+                                            <Graph key={index}
+                                                   id={`graph-${index}`}
+                                                   reps={tile.reps}
+                                                   weights={tile.weights}/>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        )
-                    }
-                )}
+                            )
+                        }
+                    ) :
+                    <div className="card">
+                        <div className="card-content">
+                            <span className="card-title">
+                                If the bar ain't bending <br/>
+                                You just pretending
+                            </span>
+                            <ul>
+                                <li>Your completed workouts will show here.</li>
+                                <li>Days where you worked out are highlighted.</li>
+                            </ul>
+                        </div>
+                    </div>}
             </div>
+        );
+    }
+}
+
+class Graph extends Component {
+    static _getLabels(weights) {
+        return weights.map(weight => `${weight.toString()} lbs`);
+    }
+
+    _instantiateGraph() {
+        let ctx = document.getElementById(this.props.id).getContext('2d');
+
+        this.chart = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {
+                labels: Graph._getLabels(this.props.weights),
+                datasets: [{
+                    label: '# of reps',
+                    data: this.props.reps
+                }]
+            }
+        });
+    }
+
+    componentDidMount() {
+        this._instantiateGraph();
+    }
+
+    componentDidUpdate() {
+        this.chart.destroy();
+        this._instantiateGraph();
+    }
+
+    render() {
+        return (
+            <canvas id={this.props.id}/>
         );
     }
 }
