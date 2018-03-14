@@ -1,8 +1,10 @@
-import React from "react";
-import {Link, Route} from "react-router-dom";
-import Planner from "./Planner.jsx";
-import Feed from "./Feed.jsx";
-import Profile from "./Profile.jsx";
+import React from 'react';
+import {Link, Route} from 'react-router-dom';
+import Planner from './Planner.jsx';
+import Feed from './Feed.jsx';
+import Profile from './Profile.jsx';
+//noinspection JSUnresolvedVariable
+import {Sidenav} from 'materialize-css';
 
 const {Component} = React;
 const VIEWS = [
@@ -17,7 +19,12 @@ export class Navbar extends Component {
         this.state = {activeTab: null};
     }
 
-    _views(mobile=false) {
+    componentDidMount() {
+        let elem = document.querySelector('.sidenav');
+        Sidenav.init(elem);
+    }
+
+    _views(mobile = false) {
         return VIEWS.map(
             view =>
                 <li key={view.id}
@@ -48,7 +55,7 @@ export class Navbar extends Component {
         return (
             <div>
                 <nav>
-                    <div className="nav-wrapper">
+                    <div className="nav-wrapper container">
                         <a href="/" className="brand-logo">increment</a>
                         <a href="#" data-target="mobile-sidenav" className="sidenav-trigger">
                             <i className="material-icons">menu</i>
@@ -70,7 +77,7 @@ export class Navbar extends Component {
 export class Content extends Component {
     render() {
         return (
-            <div className="">
+            <div className="container">
                 {VIEWS.map(view =>
                     <Route key={view.id} path={view.path} component={view.component}/>
                 )}

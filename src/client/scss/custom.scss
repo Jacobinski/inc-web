@@ -1,0 +1,82 @@
+div.scroll-menu {
+  overflow-x: scroll;
+  white-space: nowrap;
+  height: 100%;
+
+}
+
+div.scroll-menu .scroll-menu-item {
+  display: inline-flex;
+  margin-right: 1em;
+  margin-left: 0.5em;
+}
+
+.default-message {
+  margin-right: 1em;
+  margin-left: 1em;
+}
+
+.eq-col-container {
+  display: flex;
+  height: 330px;
+}
+
+.eq-col {
+  flex: 1;
+}
+
+.calendar {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  border-style: none;
+  margin-top: 7.5px;
+}
+
+.gym-day:not(.react-calendar__tile--active) {
+  background: #a5c6e7;
+}
+
+/**************** CARD-FLIP ****************/
+/* entire container, keeps perspective */
+.flip-container {
+  perspective: 1000px;
+}
+
+.flip-container.flip .flipper {
+  transform: rotateY(180deg);
+}
+
+.flip-container, .front, .back {
+  width: 320px;
+  height: 300px;
+}
+
+/* flip speed goes here */
+.flipper {
+  transition: 0.6s;
+  transform-style: preserve-3d;
+
+  position: relative;
+}
+
+/* hide back of pane during swap */
+.front, .back {
+  backface-visibility: hidden;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* front pane, placed above back */
+.front {
+  z-index: 2;
+  /* for firefox 31 */
+  transform: rotateY(0deg);
+}
+
+/* back, initially hidden pane */
+.back {
+  transform: rotateY(180deg);
+}
