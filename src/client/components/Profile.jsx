@@ -79,6 +79,16 @@ export default class Profile extends Component {
 }
 
 class WorkoutData extends Component {
+    static _toggleClass(index) {
+        document.querySelector(`#toggle-node-${index}`).classList.toggle('flip');
+    }
+
+    constructor(props) {
+        super(props);
+
+        WorkoutData._toggleClass = WorkoutData._toggleClass.bind(this);
+    }
+
     render() {
         return (
             <div className="scroll-menu">
@@ -86,14 +96,42 @@ class WorkoutData extends Component {
                         (tile, index) => {
                             return (
                                 <div key={index} className="scroll-menu-item">
-                                    <div className="card small">
-                                        <div className="card-content">
-                                            <span className="card-title">{tile.exercise}</span>
-                                            <Graph key={index}
-                                                   id={`graph-${index}`}
-                                                   reps={tile.reps}
-                                                   weights={tile.weights}/>
+                                    <div id={`toggle-node-${index}`}
+                                         ref="flip"
+                                         className="flip-container">
+
+                                        <div className="flipper">
+
+                                            <div className="front">
+                                                <div className="card small">
+                                                    <div className="card-content">
+                                                        <span className="card-title">{tile.exercise}</span>
+                                                        <Graph key={index}
+                                                               id={`graph-${index}`}
+                                                               reps={tile.reps}
+                                                               weights={tile.weights}/>
+                                                        <a onClick={(e) => WorkoutData._toggleClass(index, e)}
+                                                           className="btn-floating halfway-fab red">
+                                                            <i className="material-icons">flip_to_back</i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="back">
+                                                <div className="card small">
+                                                    <div className="card-content">
+                                                        <span className="card-title">{tile.exercise}</span>
+                                                        <a onClick={(e) => WorkoutData._toggleClass(index, e)}
+                                                           className="btn-floating halfway-fab red">
+                                                            <i className="material-icons">flip_to_front</i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </div>
+
                                     </div>
                                 </div>
                             )
