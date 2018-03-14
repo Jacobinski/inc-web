@@ -1,6 +1,7 @@
 import React from "react";
 import Calendar from "react-calendar";
 import Chart from "chart.js";
+import {EXERCISE_TYPES, EXERCISE_IMG} from "../constants";
 
 const {Component} = React;
 
@@ -16,8 +17,9 @@ export default class Profile extends Component {
     componentWillMount() {
         fetch('/profile')
             .then(response => response.json())
-            .then((monthData) => {
-                monthData.map((entry) => {
+            .then((jsonData) => {
+                let {username, data} = jsonData;
+                data = data.map((entry) => {
                         let {day, month, year} = entry.date;
                         entry.date = new Date(year, month, day);
                         return entry;
@@ -25,12 +27,11 @@ export default class Profile extends Component {
                 );
 
                 let activeDays = [];
-                for (let entry of monthData) {
+                for (let entry of data) {
                     activeDays.push(entry.date);
                 }
 
-                this.setState({monthData, activeDays});
-                console.log(this.state);
+                this.setState({monthData: data, activeDays, username});
             })
             .catch((error) => {
                 this.setState({error: 'There was an error.'});
@@ -92,10 +93,13 @@ export default class Profile extends Component {
                             {this.state.dayData.length > 0 ? this.state.dayData.map(
                                     (exercise, index) => {
                                         return (
-                                            <WorkoutData index={index}
+                                            <WorkoutData key={index}
+                                                         index={index}
+                                                         username={this.state.username}
                                                          reps={exercise.reps}
                                                          weights={exercise.weights}
-                                                         name={exercise.exercise}/>
+                                                         name={EXERCISE_TYPES[exercise.exerciseID]}
+                                                         exerciseID={exercise.exerciseID}/>
                                         )
                                     }
                                 ) : <DefaultMessage/>}
@@ -137,6 +141,10 @@ class WorkoutData extends Component {
         WorkoutData._toggleClass = WorkoutData._toggleClass.bind(this);
     }
 
+    componentDidUpdate() {
+        document.querySelector(`#toggle-node-${this.props.index}`).classList.remove('flip');
+    }
+
     render() {
         return (
             <div key={this.props.index} className="scroll-menu-item">
@@ -165,7 +173,10 @@ class WorkoutData extends Component {
                         <div className="back">
                             <div className="card small">
                                 <div className="card-content">
-                                    <span className="card-title">{this.props.name}</span>
+                                    <div className="card-image">
+                                        <img src={EXERCISE_IMG[this.props.exerciseID]}/>
+                                        <span className="card-title">{this.props.name}</span>
+                                    </div>
                                     <a onClick={(e) => WorkoutData._toggleClass(this.props.index, e)}
                                        className="btn-floating halfway-fab red">
                                         <i className="material-icons">flip_to_front</i>
