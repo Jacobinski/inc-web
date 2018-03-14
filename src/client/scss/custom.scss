@@ -1,12 +1,28 @@
 div.scroll-menu {
   overflow-x: scroll;
   white-space: nowrap;
+  height: 100%;
+
 }
 
 div.scroll-menu .scroll-menu-item {
   display: inline-flex;
   margin-right: 1em;
   margin-left: 0.5em;
+}
+
+.default-message {
+  margin-right: 1em;
+  margin-left: 1em;
+}
+
+.eq-col-container {
+  display: flex;
+  height: 330px;
+}
+
+.eq-col {
+  flex: 1;
 }
 
 .calendar {
@@ -33,7 +49,7 @@ div.scroll-menu .scroll-menu-item {
 
 .flip-container, .front, .back {
   width: 320px;
-  height: 480px;
+  height: 300px;
 }
 
 /* flip speed goes here */

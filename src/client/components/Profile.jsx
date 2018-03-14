@@ -52,8 +52,8 @@ export default class Profile extends Component {
         return (
             <div>
                 <h2>Profile</h2>
-                <div className="row">
-                    <div className="col s12 m6 center">
+                <div className="row eq-col-container">
+                    <div className="col eq-col s12 m6">
                         <Calendar className="calendar"
                                   onChange={this._selectDate}
                                   value={this.state.date}
@@ -85,10 +85,9 @@ export default class Profile extends Component {
                                                   }
                                               }
                                       }
-                                  }}
-                        />
+                                  }}/>
                     </div>
-                    <div className="col s12 m6 center">
+                    <div className="col eq-col s12 m6">
                         <div className="scroll-menu">
                             {this.state.dayData.length > 0 ? this.state.dayData.map(
                                     (exercise, index) => {
@@ -110,18 +109,20 @@ export default class Profile extends Component {
 
 class DefaultMessage extends Component {
     render() {
-        return (<div className="card">
-            <div className="card-content">
+        return (
+            <div className="card default-message">
+                <div className="card-content">
                             <span className="card-title">
                                 If the bar ain't bending <br/>
                                 You just pretending
                             </span>
-                <ul>
-                    <li>Your completed workouts will show here.</li>
-                    <li>Days where you worked out are highlighted.</li>
-                </ul>
+                    <ul>
+                        <li>Your completed workouts will show here.</li>
+                        <li>Days where you worked out are highlighted.</li>
+                    </ul>
+                </div>
             </div>
-        </div>)
+        );
     }
 }
 
