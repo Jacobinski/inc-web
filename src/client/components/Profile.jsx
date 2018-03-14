@@ -59,13 +59,31 @@ export default class Profile extends Component {
                                   value={this.state.date}
                                   maxDate={this.state.today}
                                   tileClassName={({date, view}) => {
-                                      let time = date.getTime();
-                                      if (view === 'month') {
-                                          for (let activeDay of this.state.activeDays) {
-                                              if (activeDay.getTime() === time) {
-                                                  return this.TILE_CLASS_NAME;
+                                      let day = date.getDate();
+                                      let month = date.getMonth();
+                                      let year = date.getYear();
+
+                                      switch (view) {
+                                          case 'month':
+                                              for (let activeDay of this.state.activeDays) {
+                                                  if (day === activeDay.getDate() && month === activeDay.getMonth()) {
+                                                      return this.TILE_CLASS_NAME;
+                                                  }
                                               }
-                                          }
+                                              break;
+                                          case 'year':
+                                              for (let activeDay of this.state.activeDays) {
+                                                  if (month === activeDay.getMonth() && year === activeDay.getYear()) {
+                                                      return this.TILE_CLASS_NAME;
+                                                  }
+                                              }
+                                              break;
+                                          case 'decade':
+                                              for (let activeDay of this.state.activeDays) {
+                                                  if (year === activeDay.getYear()) {
+                                                      return this.TILE_CLASS_NAME;
+                                                  }
+                                              }
                                       }
                                   }}
                         />
