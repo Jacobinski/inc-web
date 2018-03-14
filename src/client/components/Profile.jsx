@@ -70,11 +70,39 @@ export default class Profile extends Component {
                         />
                     </div>
                     <div className="col s12 m6 center">
-                        <WorkoutData data={this.state.dayData}/>
+                        <div className="scroll-menu">
+                            {this.state.dayData.length > 0 ? this.state.dayData.map(
+                                    (exercise, index) => {
+                                        return (
+                                            <WorkoutData index={index}
+                                                         reps={exercise.reps}
+                                                         weights={exercise.weights}
+                                                         name={exercise.exercise}/>
+                                        )
+                                    }
+                                ) : <DefaultMessage/>}
+                        </div>
                     </div>
                 </div>
             </div>
         );
+    }
+}
+
+class DefaultMessage extends Component {
+    render() {
+        return (<div className="card">
+            <div className="card-content">
+                            <span className="card-title">
+                                If the bar ain't bending <br/>
+                                You just pretending
+                            </span>
+                <ul>
+                    <li>Your completed workouts will show here.</li>
+                    <li>Days where you worked out are highlighted.</li>
+                </ul>
+            </div>
+        </div>)
     }
 }
 
@@ -91,64 +119,44 @@ class WorkoutData extends Component {
 
     render() {
         return (
-            <div className="scroll-menu">
-                { (this.props.data.length > 0) ? this.props.data.map(
-                        (tile, index) => {
-                            return (
-                                <div key={index} className="scroll-menu-item">
-                                    <div id={`toggle-node-${index}`}
-                                         ref="flip"
-                                         className="flip-container">
+            <div key={this.props.index} className="scroll-menu-item">
+                <div id={`toggle-node-${this.props.index}`}
+                     ref="flip"
+                     className="flip-container">
 
-                                        <div className="flipper">
+                    <div className="flipper">
 
-                                            <div className="front">
-                                                <div className="card small">
-                                                    <div className="card-content">
-                                                        <span className="card-title">{tile.exercise}</span>
-                                                        <Graph key={index}
-                                                               id={`graph-${index}`}
-                                                               reps={tile.reps}
-                                                               weights={tile.weights}/>
-                                                        <a onClick={(e) => WorkoutData._toggleClass(index, e)}
-                                                           className="btn-floating halfway-fab red">
-                                                            <i className="material-icons">flip_to_back</i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="back">
-                                                <div className="card small">
-                                                    <div className="card-content">
-                                                        <span className="card-title">{tile.exercise}</span>
-                                                        <a onClick={(e) => WorkoutData._toggleClass(index, e)}
-                                                           className="btn-floating halfway-fab red">
-                                                            <i className="material-icons">flip_to_front</i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-                                    </div>
+                        <div className="front">
+                            <div className="card small">
+                                <div className="card-content">
+                                    <span className="card-title">{this.props.name}</span>
+                                    <Graph key={this.props.index}
+                                           id={`graph-${this.props.index}`}
+                                           reps={this.props.reps}
+                                           weights={this.props.weights}/>
+                                    <a onClick={(e) => WorkoutData._toggleClass(this.props.index, e)}
+                                       className="btn-floating halfway-fab red">
+                                        <i className="material-icons">flip_to_back</i>
+                                    </a>
                                 </div>
-                            )
-                        }
-                    ) :
-                    <div className="card">
-                        <div className="card-content">
-                            <span className="card-title">
-                                If the bar ain't bending <br/>
-                                You just pretending
-                            </span>
-                            <ul>
-                                <li>Your completed workouts will show here.</li>
-                                <li>Days where you worked out are highlighted.</li>
-                            </ul>
+                            </div>
                         </div>
-                    </div>}
+
+                        <div className="back">
+                            <div className="card small">
+                                <div className="card-content">
+                                    <span className="card-title">{this.props.name}</span>
+                                    <a onClick={(e) => WorkoutData._toggleClass(this.props.index, e)}
+                                       className="btn-floating halfway-fab red">
+                                        <i className="material-icons">flip_to_front</i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
             </div>
         );
     }
