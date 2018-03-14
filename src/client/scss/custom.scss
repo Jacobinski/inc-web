@@ -17,7 +17,7 @@ div.scroll-menu .scroll-menu-item {
   margin-top: 7.5px;
 }
 
-.react-calendar__tile.active {
+.gym-day:not(.react-calendar__tile--active) {
   background: #a5c6e7;
 }
 

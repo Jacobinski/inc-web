@@ -10,6 +10,7 @@ export default class Profile extends Component {
         this.state = {date: new Date(), monthData: [], dayData: [], today: new Date(), error: null, activeDays: []};
 
         this._selectDate = this._selectDate.bind(this);
+        this.TILE_CLASS_NAME = 'gym-day';
     }
 
     componentWillMount() {
@@ -62,7 +63,7 @@ export default class Profile extends Component {
                                       if (view === 'month') {
                                           for (let activeDay of this.state.activeDays) {
                                               if (activeDay.getTime() === time) {
-                                                  return 'active';
+                                                  return this.TILE_CLASS_NAME;
                                               }
                                           }
                                       }
