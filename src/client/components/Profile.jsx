@@ -1,52 +1,80 @@
 import React from "react";
 import Calendar from "react-calendar";
 import Chart from "chart.js";
-import {EXERCISE_TYPES, EXERCISE_IMG} from "../constants";
+import {EXERCISE_TYPES, EXERCISE_IMG, SEC_TO_MSEC, PING_INTERVAL} from "../constants";
+import {WorkoutsAPI} from "../../api/workouts";
 
 const {Component} = React;
 
 export default class Profile extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {date: new Date(), monthData: [], dayData: [], today: new Date(), error: null, activeDays: []};
-
-        this._selectDate = this._selectDate.bind(this);
-        this.TILE_CLASS_NAME = 'gym-day';
-    }
-
-    componentWillMount() {
-        fetch('/profile')
+    _getWorkouts() {
+        let date = this.state.date;
+        WorkoutsAPI.getWorkouts('Jacobinski', date.getMonth() + 1, date.getFullYear())
             .then(response => response.json())
             .then((jsonData) => {
-                let {username, data} = jsonData;
+                let {username, data} = jsonData.data;
                 data = data.map((entry) => {
-                        let {day, month, year} = entry.date;
-                        entry.date = new Date(year, month, day);
+                        entry.date = new Date(entry.date * SEC_TO_MSEC);
                         return entry;
                     }
                 );
-
                 let activeDays = [];
                 for (let entry of data) {
                     activeDays.push(entry.date);
                 }
 
                 this.setState({monthData: data, activeDays, username});
+                this._selectDate(date);
             })
             .catch((error) => {
                 this.setState({error: 'There was an error.'});
                 console.log(error);
-            })
+            });
+    }
+
+    componentWillMount() {
+        this._getWorkouts();
+        this.ping = setInterval(() => this._getWorkouts(), PING_INTERVAL);
+    }
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            date: new Date(),
+            monthData: [],
+            dayData: [],
+            today: new Date(),
+            error: null,
+            username: null,
+            activeDays: []
+        };
+
+        this._selectDate = this._selectDate.bind(this);
+        this._generateID = this._generateID.bind(this);
+        this.TILE_CLASS_NAME = 'gym-day';
+
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.ping);
     }
 
     _selectDate(date) {
         this.setState({date, dayData: []});
+        let dayData = [];
 
         for (let entry of this.state.monthData) {
-            if (entry.date.getTime() == date.getTime()) {
-                this.setState({dayData: entry.workout});
+            let entryDate = entry.date;
+            entryDate.setHours(0, 0, 0, 0);
+            if (entryDate.getTime() == date.getTime()) {
+                dayData.push(entry['exercises']);
             }
         }
+        this.setState({dayData});
+    }
+
+    _generateID(index, key) {
+        return `${index}-workout-${this.state.username}-${key}`;
     }
 
     render() {
@@ -57,12 +85,12 @@ export default class Profile extends Component {
                     <div className="col eq-col s12 m6">
                         <Calendar className="calendar"
                                   onChange={this._selectDate}
-                                  value={this.state.date}
                                   maxDate={this.state.today}
+                                  value={this.state.date}
                                   tileClassName={({date, view}) => {
                                       let day = date.getDate();
                                       let month = date.getMonth();
-                                      let year = date.getYear();
+                                      let year = date.getFullYear();
 
                                       switch (view) {
                                           case 'month':
@@ -74,14 +102,14 @@ export default class Profile extends Component {
                                               break;
                                           case 'year':
                                               for (let activeDay of this.state.activeDays) {
-                                                  if (month === activeDay.getMonth() && year === activeDay.getYear()) {
+                                                  if (month === activeDay.getMonth() && year === activeDay.getFullYear()) {
                                                       return this.TILE_CLASS_NAME;
                                                   }
                                               }
                                               break;
                                           case 'decade':
                                               for (let activeDay of this.state.activeDays) {
-                                                  if (year === activeDay.getYear()) {
+                                                  if (year === activeDay.getFullYear()) {
                                                       return this.TILE_CLASS_NAME;
                                                   }
                                               }
@@ -95,11 +123,13 @@ export default class Profile extends Component {
                                         return (
                                             <WorkoutData key={index}
                                                          index={index}
-                                                         username={this.state.username}
                                                          reps={exercise.reps}
                                                          weights={exercise.weights}
                                                          name={EXERCISE_TYPES[exercise.exerciseID]}
-                                                         exerciseID={exercise.exerciseID}/>
+                                                         exerciseID={exercise.exerciseID}
+                                                         startTimes={exercise.startTimes}
+                                                         endTimes={exercise.endTimes}
+                                                         id={this._generateID(index, exercise.startTimes[0])}/>
                                         )
                                     }
                                 ) : <DefaultMessage/>}
@@ -131,24 +161,24 @@ class DefaultMessage extends Component {
 }
 
 class WorkoutData extends Component {
-    static _toggleClass(index) {
-        document.querySelector(`#toggle-node-${index}`).classList.toggle('flip');
+    _toggleClass() {
+        document.querySelector(`#toggle-node-${this.props.id}`).classList.toggle('flip');
     }
 
     constructor(props) {
         super(props);
 
-        WorkoutData._toggleClass = WorkoutData._toggleClass.bind(this);
+        this._toggleClass = this._toggleClass.bind(this);
     }
 
     componentDidUpdate() {
-        document.querySelector(`#toggle-node-${this.props.index}`).classList.remove('flip');
+        document.querySelector(`#toggle-node-${this.props.id}`).classList.remove('flip');
     }
 
     render() {
         return (
             <div key={this.props.index} className="scroll-menu-item">
-                <div id={`toggle-node-${this.props.index}`}
+                <div id={`toggle-node-${this.props.id}`}
                      ref="flip"
                      className="flip-container">
 
@@ -159,10 +189,12 @@ class WorkoutData extends Component {
                                 <div className="card-content">
                                     <span className="card-title">{this.props.name}</span>
                                     <Graph key={this.props.index}
-                                           id={`graph-${this.props.index}`}
+                                           id={`graph-${this.props.id}`}
                                            reps={this.props.reps}
-                                           weights={this.props.weights}/>
-                                    <a onClick={(e) => WorkoutData._toggleClass(this.props.index, e)}
+                                           weights={this.props.weights}
+                                           startTimes={this.props.startTimes}
+                                           endTimes={this.props.endTimes}/>
+                                    <a onClick={this._toggleClass}
                                        className="btn-floating halfway-fab red">
                                         <i className="material-icons">flip_to_back</i>
                                     </a>
@@ -177,7 +209,7 @@ class WorkoutData extends Component {
                                         <img src={EXERCISE_IMG[this.props.exerciseID]}/>
                                         <span className="card-title">{this.props.name}</span>
                                     </div>
-                                    <a onClick={(e) => WorkoutData._toggleClass(this.props.index, e)}
+                                    <a onClick={this._toggleClass}
                                        className="btn-floating halfway-fab red">
                                         <i className="material-icons">flip_to_front</i>
                                     </a>
@@ -198,7 +230,7 @@ class Graph extends Component {
         return weights.map(weight => `${weight.toString()} lbs`);
     }
 
-    _instantiateGraph() {
+    componentDidMount() {
         let ctx = document.getElementById(this.props.id).getContext('2d');
 
         this.chart = new Chart(ctx, {
@@ -207,19 +239,23 @@ class Graph extends Component {
                 labels: Graph._getLabels(this.props.weights),
                 datasets: [{
                     label: '# of reps',
-                    data: this.props.reps
+                    data: this.props.reps.slice()
                 }]
             }
         });
     }
 
-    componentDidMount() {
-        this._instantiateGraph();
+    componentDidUpdate() {
+        this.chart.data.labels = Graph._getLabels(this.props.weights);
+        this.chart.data.datasets.forEach((dataset) => {
+            dataset.data = this.props.reps.slice();
+        });
+
+        this.chart.update();
     }
 
-    componentDidUpdate() {
+    componentWillUnmount() {
         this.chart.destroy();
-        this._instantiateGraph();
     }
 
     render() {

@@ -7,7 +7,7 @@ import profile from '../routes/profile';
 
 const app = express();
 const views = {index: '/', planner: '/planner', feed: '/feed', profile: '/profile'};
-const PORT = 8080;
+const PORT = 8081;
 
 app
     .use(express.static(`${__dirname}/../../`))
