@@ -11,3 +11,7 @@ export const EXERCISE_IMG = [
     'http://s3.amazonaws.com/hawtpress/wp-content/uploads/2016/10/17150530/Screen-Shot-2016-10-17-at-12.54.50-PM.png',
     'https://www.bodybuilding.com/fun/images/2015/how-to-overhead-press-a-beginners-guide-graphics-1.jpg'
 ];
+
+export const SEC_TO_MSEC = 1000;
+
+export const PING_INTERVAL_MSEC = 20000;
