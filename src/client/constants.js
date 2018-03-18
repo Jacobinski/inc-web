@@ -14,4 +14,4 @@ export const EXERCISE_IMG = [
 
 export const SEC_TO_MSEC = 1000;
 
-export const PING_INTERVAL = 20000;
+export const PING_INTERVAL_MSEC = 20000;

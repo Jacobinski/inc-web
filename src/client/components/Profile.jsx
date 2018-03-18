@@ -1,7 +1,7 @@
 import React from "react";
 import Calendar from "react-calendar";
 import Chart from "chart.js";
-import {EXERCISE_TYPES, EXERCISE_IMG, SEC_TO_MSEC, PING_INTERVAL} from "../constants";
+import {EXERCISE_TYPES, EXERCISE_IMG, SEC_TO_MSEC, PING_INTERVAL_MSEC} from "../constants";
 import {WorkoutsAPI} from "../../api/workouts";
 
 const {Component} = React;
@@ -34,7 +34,7 @@ export default class Profile extends Component {
 
     componentWillMount() {
         this._getWorkouts();
-        this.ping = setInterval(() => this._getWorkouts(), PING_INTERVAL);
+        this.ping = setInterval(() => this._getWorkouts(), PING_INTERVAL_MSEC);
     }
 
     constructor(props) {
