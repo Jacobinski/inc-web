@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link, Route} from 'react-router-dom';
 import Planner from './Planner.jsx';
+import Leaderboards from './Leaderboards.jsx';
 import Feed from './Feed.jsx';
 import Profile from './Profile.jsx';
 //noinspection JSUnresolvedVariable
@@ -8,9 +9,10 @@ import {Sidenav} from 'materialize-css';
 
 const {Component} = React;
 const VIEWS = [
-    {id: 1, path: '/planner', title: 'Planner', component: Planner},
-    {id: 2, path: '/feed', title: 'Feed', component: Feed},
-    {id: 3, path: '/profile', title: 'Profile', component: Profile}
+    /* {id: 1, path: '/planner', title: 'Planner', component: Planner},
+    {id: 2, path: '/feed', title: 'Feed', component: Feed},*/
+    {id: 3, path: '/profile', title: 'Profile', component: Profile},
+    {id: 4, path: '/leaderboards', title: 'Leaderboards', component: Leaderboards}
 ];
 
 export class Navbar extends Component {
