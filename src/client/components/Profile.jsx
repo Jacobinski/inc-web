@@ -1,7 +1,7 @@
 import React from "react";
 import Calendar from "react-calendar";
 import Chart from "chart.js";
-import {EXERCISE_TYPES, EXERCISE_IMG, SEC_TO_MSEC, PING_INTERVAL_MSEC} from "../constants";
+import {SEC_TO_MSEC, PING_INTERVAL_MSEC} from "../constants";
 import {WorkoutsAPI} from "../../api/workouts";
 
 const {Component} = React;
@@ -9,7 +9,7 @@ const {Component} = React;
 export default class Profile extends Component {
     _getWorkouts() {
         let date = this.state.date;
-        WorkoutsAPI.getWorkouts('Jacobinski', date.getMonth() + 1, date.getFullYear())
+        WorkoutsAPI.getWorkouts('Rahatchd', date.getMonth() + 1, date.getFullYear())
             .then(response => response.json())
             .then((jsonData) => {
                 let {username, data} = jsonData.data;
@@ -125,8 +125,8 @@ export default class Profile extends Component {
                                                          index={index}
                                                          reps={exercise.reps}
                                                          weights={exercise.weights}
-                                                         name={EXERCISE_TYPES[exercise.exerciseID]}
-                                                         exerciseID={exercise.exerciseID}
+                                                         name={exercise.exercise}
+                                                         exercise={exercise.exercise}
                                                          startTimes={exercise.startTimes}
                                                          endTimes={exercise.endTimes}
                                                          id={this._generateID(index, exercise.startTimes[0])}/>
@@ -206,7 +206,7 @@ class WorkoutData extends Component {
                             <div className="card small">
                                 <div className="card-content">
                                     <div className="card-image">
-                                        <img src={EXERCISE_IMG[this.props.exerciseID]}/>
+                                        <img src="https://ae01.alicdn.com/kf/HTB1j47Lczgy_uJjSZTEq6AYkFXaC/DIY-frame-Arnold-Schwarzenegger-Terminator-Great-Muscle-Poster-Bodybuilding-Gym-Decor.jpg_640x640.jpg"/>
                                         <span className="card-title">{this.props.name}</span>
                                     </div>
                                     <a onClick={this._toggleClass}
