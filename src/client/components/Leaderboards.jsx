@@ -1,9 +1,8 @@
 import React from "react";
 import {LeaderboardsAPI} from "../../api/leaderboards.js";
+import {PING_INTERVAL_MSEC} from "../constants.js";
 
 const {Component} = React;
-
-const SORT_TYPES = {0: 'reps', 1: 'weights'};
 
 export default class Leaderboards extends Component {
     _getLeaderboards() {
@@ -21,6 +20,7 @@ export default class Leaderboards extends Component {
 
     componentWillMount() {
         this._getLeaderboards();
+        this.ping = setInterval(() => this._getLeaderboards(), PING_INTERVAL_MSEC);
     }
 
     constructor(props) {
@@ -37,6 +37,10 @@ export default class Leaderboards extends Component {
 
     componentDidMount() {
         this._sort(this.sortBy);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.ping);
     }
 
     _sort(sortby) {
