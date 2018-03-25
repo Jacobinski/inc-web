@@ -80,3 +80,7 @@ div.scroll-menu .scroll-menu-item {
 .back {
   transform: rotateY(180deg);
 }
+
+th.hover-pointer:hover {
+  cursor: pointer;
+}
