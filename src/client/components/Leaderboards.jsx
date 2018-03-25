@@ -11,6 +11,7 @@ export default class Leaderboards extends Component {
             .then(response => response.json())
             .then((jsonData) => {
                 this.state.leaderboards = jsonData.data;
+                this.state.table = jsonData.data;
             })
             .catch((error) => {
                 this.setState({error: 'There was an error.'});
@@ -26,9 +27,11 @@ export default class Leaderboards extends Component {
         super(props);
         this.sortBy = 'reps';
         this.reverseOrder = false;
-        this.state = {leaderboards: [], error: null};
+        this.state = {leaderboards: [], table: [], error: null, filterBy: ''};
 
         this._sort = this._sort.bind(this);
+        this._filterTable = this._filterTable.bind(this);
+        this._clearFilter = this._clearFilter.bind(this);
         this._getLeaderboards = this._getLeaderboards.bind(this);
     }
 
@@ -43,8 +46,8 @@ export default class Leaderboards extends Component {
         }
         this.sortBy = sortby;
 
-        let leaderboards = this.state.leaderboards;
-        leaderboards.sort(
+        let table = this.state.table;
+        table.sort(
             (a, b) => {
                 if (a[sortby] < b[sortby]) return 1;
                 if (a[sortby] > b[sortby]) return -1;
@@ -52,15 +55,56 @@ export default class Leaderboards extends Component {
             }
         );
 
-        if (this.reverseOrder) leaderboards.reverse();
+        if (this.reverseOrder) table.reverse();
 
-        this.setState(leaderboards);
+        this.setState(table);
+    }
+
+    _filterTable(e) {
+        let filterBy = e.target.value;
+        this.setState({filterBy});
+        console.log(this.state.leaderboards);
+
+        let table = this.state.leaderboards.filter(
+            (item) => {
+                if (item.username) {
+                    return (item.username.toLowerCase().search(filterBy.toLowerCase()) !== -1);
+                }
+
+            }
+        );
+        this.setState({table});
+
+        this._sort(this.sortBy);
+    }
+
+    _clearFilter() {
+        this.setState({filterBy: '', table: this.state.leaderboards});
     }
 
     render() {
         return (
             <div>
                 <h2>Leaderboards</h2>
+
+                <nav>
+                    <div className="nav-wrapper teal lighten-2">
+                        <form>
+                            <div className="input-field">
+                                <input id="search"
+                                       type="search"
+                                       value={this.state.filterBy}
+                                       onChange={(e) => this._filterTable(e)}
+                                       placeholder="username"/>
+                                <label className="label-icon" htmlFor="search">
+                                    <i className="material-icons">search</i>
+                                </label>
+                                <i className="material-icons" onClick={this._clearFilter}>close</i>
+                            </div>
+                        </form>
+                    </div>
+                </nav>
+
                 <table className="highlight responsive-table">
                     <thead>
                     <tr>
@@ -68,13 +112,13 @@ export default class Leaderboards extends Component {
                         <th className="hover-pointer" onClick={(e) => this._sort('reps', e)}>
                             Reps
                         </th>
-                        <th className="hover-pointer" onClick={(e) => this._sort('reps', e)}>
+                        <th className="hover-pointer" onClick={(e) => this._sort('weights', e)}>
                             Weights
                         </th>
                     </tr>
                     </thead>
                     <tbody>
-                    {this.state.leaderboards.map(
+                    {this.state.table.map(
                         (row, index) =>
                             <tr key={index}>
                                 <td>{row.username}</td>
