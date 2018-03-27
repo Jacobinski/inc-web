@@ -6,7 +6,7 @@ import {ExercisesAPI} from "../../api/exercises";
 
 const {Component} = React;
 
-export default class Profile extends Component {
+export default class History extends Component {
     _getWorkouts() {
         let date = this.state.date;
         ExercisesAPI.getExercises('Stark', date.getMonth() + 1, date.getFullYear())
@@ -80,7 +80,7 @@ export default class Profile extends Component {
     render() {
         return (
             <div>
-                <h2>Profile</h2>
+                <h2>History</h2>
                 <div className="row eq-col-container">
                     <div className="col eq-col s12 m6">
                         <Calendar className="calendar"
