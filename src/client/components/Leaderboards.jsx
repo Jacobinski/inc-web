@@ -93,7 +93,7 @@ export default class Leaderboards extends Component {
 
                 <nav>
                     <div className="nav-wrapper teal lighten-2">
-                        <form>
+                        <form autoComplete="off">
                             <div className="input-field">
                                 <input id="search"
                                        type="search"
