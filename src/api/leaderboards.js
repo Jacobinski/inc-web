@@ -1,4 +1,4 @@
-const LEADERBOARDS_ENDPOINT = 'http://ec2-54-183-20-248.us-west-1.compute.amazonaws.com/api/leaderboards';
+const LEADERBOARDS_ENDPOINT = 'http://ec2-54-215-137-120.us-west-1.compute.amazonaws.com/api/leaderboards';
 
 export class LeaderboardsAPI {
     static getLeaderboards() {
