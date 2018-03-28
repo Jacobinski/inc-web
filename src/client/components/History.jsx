@@ -10,25 +10,27 @@ const {Component} = React;
 const HOUSES = ['Stark', 'Lannister', 'Targaryen', 'Baratheon', 'Greyjoy'];
 
 export default class History extends Component {
-    _getWorkouts() {
+    _getExercises() {
         this._clearTiles();
         let date = this.state.date;
         ExercisesAPI.getExercises(this.state.username, date.getMonth() + 1, date.getFullYear())
             .then(response => response.json())
             .then((jsonData) => {
-                let {username, data} = jsonData.data;
-                data = data.map((entry) => {
-                        entry.date = new Date(entry.date * SEC_TO_MSEC);
-                        return entry;
+                if (jsonData.data) {
+                    let {username, data} = jsonData.data;
+                    data = data.map((entry) => {
+                            entry.date = new Date(entry.date * SEC_TO_MSEC);
+                            return entry;
+                        }
+                    );
+                    let activeDays = [];
+                    for (let entry of data) {
+                        activeDays.push(entry.date);
                     }
-                );
-                let activeDays = [];
-                for (let entry of data) {
-                    activeDays.push(entry.date);
-                }
 
-                this.setState({monthData: data, activeDays, username});
-                this._selectDate(date);
+                    this.setState({monthData: data, activeDays, username});
+                    this._selectDate(date);
+                }
             })
             .catch((error) => {
                 this.setState({error: 'There was an error.'});
@@ -41,8 +43,8 @@ export default class History extends Component {
     }
 
     componentWillMount() {
-        this._getWorkouts();
-        this.ping = setInterval(() => this._getWorkouts(), PING_INTERVAL_MSEC);
+        this._getExercises();
+        this.ping = setInterval(() => this._getExercises(), PING_INTERVAL_MSEC);
     }
 
     constructor(props) {
@@ -74,8 +76,8 @@ export default class History extends Component {
     }
 
     _selectUser(e) {
-        this.setState({username: e.target.value}, () => this._getWorkouts());
-        console.log(this.state.username);
+        this._clearTiles();
+        this.setState({username: e.target.value}, () => this._getExercises());
     }
 
     _selectDate(date) {
@@ -99,7 +101,7 @@ export default class History extends Component {
     render() {
         return (
             <div>
-                <h2>History of house {this.state.username}</h2>
+                <h2>History <span className="small">of house {this.state.username}</span></h2>
                 <div className="row eq-col-container">
                     <div className="col eq-col s12 m6">
                         <div className="input-field col s12">
@@ -238,7 +240,10 @@ class ExerciseData extends Component {
                             <div className="card small">
                                 <div className="card-content">
                                     <div className="card-image">
-                                        <img src={`data:image/png;base64, ${this.props.picture}`}/>
+                                        <img src={
+                                            this.props.picture ?
+                                                `data:image/png;base64, ${this.props.picture}` :
+                                                'https://cdn-maf0.heartyhosting.com/sites/muscleandfitness.com/files/styles/full_node_image_1090x614/public/media/ArnoldRealTitlePic.jpg?itok=MxniX-9P'}/>
                                         <span className="card-title">
                                             {ExerciseData._formatDate(this.props.timeDisplay)}
                                         </span>
