@@ -2,14 +2,14 @@ import React from "react";
 import Calendar from "react-calendar";
 import Chart from "chart.js";
 import {SEC_TO_MSEC, PING_INTERVAL_MSEC} from "../constants";
-import {WorkoutsAPI} from "../../api/workouts";
+import {ExercisesAPI} from "../../api/exercises";
 
 const {Component} = React;
 
-export default class Profile extends Component {
+export default class History extends Component {
     _getWorkouts() {
         let date = this.state.date;
-        WorkoutsAPI.getWorkouts('Rahatchd', date.getMonth() + 1, date.getFullYear())
+        ExercisesAPI.getExercises('Stark', date.getMonth() + 1, date.getFullYear())
             .then(response => response.json())
             .then((jsonData) => {
                 let {username, data} = jsonData.data;
@@ -80,7 +80,7 @@ export default class Profile extends Component {
     render() {
         return (
             <div>
-                <h2>Profile</h2>
+                <h2>History</h2>
                 <div className="row eq-col-container">
                     <div className="col eq-col s12 m6">
                         <Calendar className="calendar"
@@ -121,15 +121,15 @@ export default class Profile extends Component {
                             {this.state.dayData.length > 0 ? this.state.dayData.map(
                                     (exercise, index) => {
                                         return (
-                                            <WorkoutData key={index}
-                                                         index={index}
-                                                         reps={exercise.reps}
-                                                         weights={exercise.weights}
-                                                         name={exercise.exercise}
-                                                         exercise={exercise.exercise}
-                                                         startTimes={exercise.startTimes}
-                                                         endTimes={exercise.endTimes}
-                                                         id={this._generateID(index, exercise.startTimes[0])}/>
+                                            <ExerciseData key={index}
+                                                          index={index}
+                                                          reps={exercise.reps}
+                                                          weights={exercise.weights}
+                                                          name={exercise.exercise}
+                                                          exercise={exercise.exercise}
+                                                          startTimes={exercise.startTimes}
+                                                          endTimes={exercise.endTimes}
+                                                          id={this._generateID(index, exercise.startTimes[0])}/>
                                         )
                                     }
                                 ) : <DefaultMessage/>}
@@ -160,7 +160,7 @@ class DefaultMessage extends Component {
     }
 }
 
-class WorkoutData extends Component {
+class ExerciseData extends Component {
     _toggleClass() {
         document.querySelector(`#toggle-node-${this.props.id}`).classList.toggle('flip');
     }
