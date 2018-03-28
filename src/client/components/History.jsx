@@ -3,13 +3,17 @@ import Calendar from "react-calendar";
 import Chart from "chart.js";
 import {SEC_TO_MSEC, PING_INTERVAL_MSEC} from "../constants";
 import {ExercisesAPI} from "../../api/exercises";
+//noinspection JSUnresolvedVariable
+import {FormSelect} from "materialize-css";
 
 const {Component} = React;
+const HOUSES = ['Stark', 'Lannister', 'Targaryen', 'Baratheon', 'Greyjoy'];
 
 export default class History extends Component {
     _getWorkouts() {
+        this._clearTiles();
         let date = this.state.date;
-        ExercisesAPI.getExercises('Stark', date.getMonth() + 1, date.getFullYear())
+        ExercisesAPI.getExercises(this.state.username, date.getMonth() + 1, date.getFullYear())
             .then(response => response.json())
             .then((jsonData) => {
                 let {username, data} = jsonData.data;
@@ -32,6 +36,10 @@ export default class History extends Component {
             });
     }
 
+    _clearTiles() {
+        this.setState({activeDays: [], monthData: []});
+    }
+
     componentWillMount() {
         this._getWorkouts();
         this.ping = setInterval(() => this._getWorkouts(), PING_INTERVAL_MSEC);
@@ -45,18 +53,29 @@ export default class History extends Component {
             dayData: [],
             today: new Date(),
             error: null,
-            username: null,
+            username: 'Stark',
             activeDays: []
         };
 
         this._selectDate = this._selectDate.bind(this);
         this._generateID = this._generateID.bind(this);
+        this._selectUser = this._selectUser.bind(this);
+        this._clearTiles = this._clearTiles.bind(this);
         this.TILE_CLASS_NAME = 'gym-day';
+    }
 
+    componentDidMount() {
+        let elem = document.querySelector('#select-user');
+        FormSelect.init(elem);
     }
 
     componentWillUnmount() {
         clearInterval(this.ping);
+    }
+
+    _selectUser(e) {
+        this.setState({username: e.target.value}, () => this._getWorkouts());
+        console.log(this.state.username);
     }
 
     _selectDate(date) {
@@ -80,41 +99,52 @@ export default class History extends Component {
     render() {
         return (
             <div>
-                <h2>History</h2>
+                <h2>History of house {this.state.username}</h2>
                 <div className="row eq-col-container">
                     <div className="col eq-col s12 m6">
-                        <Calendar className="calendar"
-                                  onChange={this._selectDate}
-                                  maxDate={this.state.today}
-                                  value={this.state.date}
-                                  tileClassName={({date, view}) => {
-                                      let day = date.getDate();
-                                      let month = date.getMonth();
-                                      let year = date.getFullYear();
+                        <div className="input-field col s12">
+                            <select id="select-user"
+                                    value={this.state.username}
+                                    onChange={this._selectUser}>
+                                {HOUSES.map(
+                                    (house, index) =>
+                                        <option key={index} value={house}>{house}</option>
+                                )}
+                            </select>
+                            <label htmlFor="#select-user">Select user</label>
 
-                                      switch (view) {
-                                          case 'month':
-                                              for (let activeDay of this.state.activeDays) {
-                                                  if (day === activeDay.getDate() && month === activeDay.getMonth()) {
-                                                      return this.TILE_CLASS_NAME;
+                            <Calendar className="calendar"
+                                      onChange={this._selectDate}
+                                      maxDate={this.state.today}
+                                      value={this.state.date}
+                                      tileClassName={({date, view}) => {
+                                          let day = date.getDate();
+                                          let month = date.getMonth();
+                                          let year = date.getFullYear();
+                                          switch (view) {
+                                              case 'month':
+                                                  for (let activeDay of this.state.activeDays) {
+                                                      if (day === activeDay.getDate() && month === activeDay.getMonth()) {
+                                                          return this.TILE_CLASS_NAME;
+                                                      }
                                                   }
-                                              }
-                                              break;
-                                          case 'year':
-                                              for (let activeDay of this.state.activeDays) {
-                                                  if (month === activeDay.getMonth() && year === activeDay.getFullYear()) {
-                                                      return this.TILE_CLASS_NAME;
+                                                  break;
+                                              case 'year':
+                                                  for (let activeDay of this.state.activeDays) {
+                                                      if (month === activeDay.getMonth() && year === activeDay.getFullYear()) {
+                                                          return this.TILE_CLASS_NAME;
+                                                      }
                                                   }
-                                              }
-                                              break;
-                                          case 'decade':
-                                              for (let activeDay of this.state.activeDays) {
-                                                  if (year === activeDay.getFullYear()) {
-                                                      return this.TILE_CLASS_NAME;
+                                                  break;
+                                              case 'decade':
+                                                  for (let activeDay of this.state.activeDays) {
+                                                      if (year === activeDay.getFullYear()) {
+                                                          return this.TILE_CLASS_NAME;
+                                                      }
                                                   }
-                                              }
-                                      }
-                                  }}/>
+                                          }
+                                      }}/>
+                        </div>
                     </div>
                     <div className="col eq-col s12 m6">
                         <div className="scroll-menu">

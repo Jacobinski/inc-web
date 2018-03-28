@@ -1,4 +1,4 @@
-const EXERCISES_ENDPOINT = 'http://ec2-54-215-137-120.us-west-1.compute.amazonaws.com/api/exercises';
+const EXERCISES_ENDPOINT = 'http://localhost:8000/api/exercises';
 
 export class ExercisesAPI {
     static getExercises(username, month, year) {
