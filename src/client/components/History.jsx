@@ -9,7 +9,7 @@ const {Component} = React;
 export default class History extends Component {
     _getWorkouts() {
         let date = this.state.date;
-        ExercisesAPI.getExercises('Stark', date.getMonth() + 1, date.getFullYear())
+        ExercisesAPI.getExercises('Lannister', date.getMonth() + 1, date.getFullYear())
             .then(response => response.json())
             .then((jsonData) => {
                 let {username, data} = jsonData.data;
@@ -131,6 +131,7 @@ export default class History extends Component {
                                                           endTimes={exercise.endTimes}
                                                           id={this._generateID(index, exercise.startTimes[0])}
                                                           picture={exercise.picture}
+                                                          timeDisplay={exercise.startTimes[0]}
                                             />
                                         )
                                     }
@@ -163,6 +164,23 @@ class DefaultMessage extends Component {
 }
 
 class ExerciseData extends Component {
+    static _formatDate(epoch) {
+        let date = new Date(epoch * SEC_TO_MSEC);
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            timezone: 'America/Los_Angeles'
+        });
+    }
+
+    static _sum(array) {
+        return array.reduce((a, b) => a + b);
+    }
+
+    static _average(array) {
+        return ExerciseData._sum(array) / array.length;
+    }
+
     _toggleClass() {
         document.querySelector(`#toggle-node-${this.props.id}`).classList.toggle('flip');
     }
@@ -189,16 +207,27 @@ class ExerciseData extends Component {
                         <div className="front">
                             <div className="card small">
                                 <div className="card-content">
-                                    <span className="card-title">{this.props.name}</span>
-                                    <Graph key={this.props.index}
-                                           id={`graph-${this.props.id}`}
-                                           reps={this.props.reps}
-                                           weights={this.props.weights}
-                                           startTimes={this.props.startTimes}
-                                           endTimes={this.props.endTimes}/>
+                                    <div className="card-image">
+                                        <img src={`data:image/png;base64, ${this.props.picture}`}/>
+                                        <span className="card-title">
+                                            {ExerciseData._formatDate(this.props.timeDisplay)}
+                                        </span>
+                                    </div>
+                                    <div className="row">
+                                        <h5 className="col s12 center-align"><b>{this.props.name}</b></h5>
+                                        <p className="col s6 center-align">
+                                            <u>Total reps:</u> <br/>
+                                            {ExerciseData._sum(this.props.reps)}
+                                        </p>
+                                        <p className="col s6 center-align">
+                                            <u>Average weight:</u> <br/>
+                                            {ExerciseData._average(this.props.reps)} lbs
+                                        </p>
+                                    </div>
+
                                     <a onClick={this._toggleClass}
                                        className="btn-floating halfway-fab red">
-                                        <i className="material-icons">flip_to_back</i>
+                                        <i className="material-icons">flip_to_front</i>
                                     </a>
                                 </div>
                             </div>
@@ -207,13 +236,17 @@ class ExerciseData extends Component {
                         <div className="back">
                             <div className="card small">
                                 <div className="card-content">
-                                    <div className="card-image">
-                                        <img src={`data:image/png;base64, ${this.props.picture}`}/>
-                                        <span className="card-title">{this.props.name}</span>
-                                    </div>
+                                    <span className="card-title"><b>{this.props.name}</b></span>
+                                    <Graph key={this.props.index}
+                                           id={`graph-${this.props.id}`}
+                                           reps={this.props.reps}
+                                           weights={this.props.weights}
+                                           startTimes={this.props.startTimes}
+                                           endTimes={this.props.endTimes}/>
+                                    <h5 className="center-align">{ExerciseData._formatDate(this.props.timeDisplay)}</h5>
                                     <a onClick={this._toggleClass}
                                        className="btn-floating halfway-fab red">
-                                        <i className="material-icons">flip_to_front</i>
+                                        <i className="material-icons">flip_to_back</i>
                                     </a>
                                 </div>
                             </div>
