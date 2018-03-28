@@ -9,7 +9,7 @@ const {Component} = React;
 export default class History extends Component {
     _getWorkouts() {
         let date = this.state.date;
-        ExercisesAPI.getExercises('Lannister', date.getMonth() + 1, date.getFullYear())
+        ExercisesAPI.getExercises('Stark', date.getMonth() + 1, date.getFullYear())
             .then(response => response.json())
             .then((jsonData) => {
                 let {username, data} = jsonData.data;
@@ -221,10 +221,9 @@ class ExerciseData extends Component {
                                         </p>
                                         <p className="col s6 center-align">
                                             <u>Average weight:</u> <br/>
-                                            {ExerciseData._average(this.props.reps)} lbs
+                                            {ExerciseData._average(this.props.weights)} lbs
                                         </p>
                                     </div>
-
                                     <a onClick={this._toggleClass}
                                        className="btn-floating halfway-fab red">
                                         <i className="material-icons">flip_to_front</i>
@@ -274,8 +273,18 @@ class Graph extends Component {
                 labels: Graph._getLabels(this.props.weights),
                 datasets: [{
                     label: '# of reps',
-                    data: this.props.reps.slice()
+                    data: this.props.reps.slice(),
+                    backgroundColor: 'rgba(182, 215, 168, 0.4)'
                 }]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
             }
         });
     }
