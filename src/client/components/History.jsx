@@ -129,7 +129,9 @@ export default class History extends Component {
                                                           exercise={exercise.exercise}
                                                           startTimes={exercise.startTimes}
                                                           endTimes={exercise.endTimes}
-                                                          id={this._generateID(index, exercise.startTimes[0])}/>
+                                                          id={this._generateID(index, exercise.startTimes[0])}
+                                                          picture={exercise.picture}
+                                            />
                                         )
                                     }
                                 ) : <DefaultMessage/>}
@@ -206,7 +208,7 @@ class ExerciseData extends Component {
                             <div className="card small">
                                 <div className="card-content">
                                     <div className="card-image">
-                                        <img src="https://ae01.alicdn.com/kf/HTB1j47Lczgy_uJjSZTEq6AYkFXaC/DIY-frame-Arnold-Schwarzenegger-Terminator-Great-Muscle-Poster-Bodybuilding-Gym-Decor.jpg_640x640.jpg"/>
+                                        <img src={`data:image/png;base64, ${this.props.picture}`}/>
                                         <span className="card-title">{this.props.name}</span>
                                     </div>
                                     <a onClick={this._toggleClass}
