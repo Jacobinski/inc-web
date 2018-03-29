@@ -1,6 +1,7 @@
 import React from "react";
 import {LeaderboardsAPI} from "../../api/leaderboards.js";
 import {PING_INTERVAL_MSEC} from "../constants.js";
+import {LoadingIcon} from "./LoadingIcon.jsx";
 
 const {Component} = React;
 
@@ -110,7 +111,7 @@ export default class Leaderboards extends Component {
                         </form>
                     </div>
                 </nav>
-                {this.state.loading ? <p>loading</p> :
+                {this.state.loading ? <LoadingIcon/> :
                     <table className="highlight responsive-table">
                         <thead>
                         <tr>

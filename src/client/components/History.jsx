@@ -5,6 +5,7 @@ import {SEC_TO_MSEC, PING_INTERVAL_MSEC} from "../constants";
 import {ExercisesAPI} from "../../api/exercises";
 //noinspection JSUnresolvedVariable
 import {FormSelect} from "materialize-css";
+import {LoadingIcon} from "./LoadingIcon.jsx";
 
 const {Component} = React;
 const HOUSES = ['Stark', 'Lannister', 'Targaryen', 'Baratheon', 'Greyjoy'];
@@ -106,54 +107,54 @@ export default class History extends Component {
         return (
             <div>
                 <h2>History <span className="small">of house {this.state.username}</span></h2>
-                {this.state.loading ? <p> loading </p> :
-                    <div className="row eq-col-container">
-                        <div className="col eq-col s12 m6">
-                            <div className="input-field col s12">
-                                <select id="select-user"
-                                        value={this.state.username}
-                                        onChange={this._selectUser}>
-                                    {HOUSES.map(
-                                        (house, index) =>
-                                            <option key={index} value={house}>{house}</option>
-                                    )}
-                                </select>
-                                <label htmlFor="#select-user">Select user</label>
+                <div className="row eq-col-container">
+                    <div className="col eq-col s12 m6">
+                        <div className="input-field col s12">
+                            <select id="select-user"
+                                    value={this.state.username}
+                                    onChange={this._selectUser}>
+                                {HOUSES.map(
+                                    (house, index) =>
+                                        <option key={index} value={house}>{house}</option>
+                                )}
+                            </select>
+                            <label htmlFor="#select-user">Select user</label>
 
-                                <Calendar className="calendar"
-                                          onChange={this._selectDate}
-                                          maxDate={this.state.today}
-                                          value={this.state.date}
-                                          tileClassName={({date, view}) => {
-                                              let day = date.getDate();
-                                              let month = date.getMonth();
-                                              let year = date.getFullYear();
-                                              switch (view) {
-                                                  case 'month':
-                                                      for (let activeDay of this.state.activeDays) {
-                                                          if (day === activeDay.getDate() && month === activeDay.getMonth()) {
-                                                              return this.TILE_CLASS_NAME;
-                                                          }
+                            <Calendar className="calendar"
+                                      onChange={this._selectDate}
+                                      maxDate={this.state.today}
+                                      value={this.state.date}
+                                      tileClassName={({date, view}) => {
+                                          let day = date.getDate();
+                                          let month = date.getMonth();
+                                          let year = date.getFullYear();
+                                          switch (view) {
+                                              case 'month':
+                                                  for (let activeDay of this.state.activeDays) {
+                                                      if (day === activeDay.getDate() && month === activeDay.getMonth()) {
+                                                          return this.TILE_CLASS_NAME;
                                                       }
-                                                      break;
-                                                  case 'year':
-                                                      for (let activeDay of this.state.activeDays) {
-                                                          if (month === activeDay.getMonth() && year === activeDay.getFullYear()) {
-                                                              return this.TILE_CLASS_NAME;
-                                                          }
+                                                  }
+                                                  break;
+                                              case 'year':
+                                                  for (let activeDay of this.state.activeDays) {
+                                                      if (month === activeDay.getMonth() && year === activeDay.getFullYear()) {
+                                                          return this.TILE_CLASS_NAME;
                                                       }
-                                                      break;
-                                                  case 'decade':
-                                                      for (let activeDay of this.state.activeDays) {
-                                                          if (year === activeDay.getFullYear()) {
-                                                              return this.TILE_CLASS_NAME;
-                                                          }
+                                                  }
+                                                  break;
+                                              case 'decade':
+                                                  for (let activeDay of this.state.activeDays) {
+                                                      if (year === activeDay.getFullYear()) {
+                                                          return this.TILE_CLASS_NAME;
                                                       }
-                                              }
-                                          }}/>
-                            </div>
+                                                  }
+                                          }
+                                      }}/>
                         </div>
-                        <div className="col eq-col s12 m6">
+                    </div>
+                    <div className="col eq-col s12 m6">
+                        {this.state.loading ? <LoadingIcon/> :
                             <div className="scroll-menu">
                                 {this.state.dayData.length > 0 ? this.state.dayData.map(
                                         (exercise, index) => {
@@ -174,9 +175,9 @@ export default class History extends Component {
                                         }
                                     ) : <DefaultMessage/>}
                             </div>
-                        </div>
+                        }
                     </div>
-                }
+                </div>
             </div>
         );
     }
