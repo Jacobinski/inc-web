@@ -10,8 +10,13 @@ const {Component} = React;
 const HOUSES = ['Stark', 'Lannister', 'Targaryen', 'Baratheon', 'Greyjoy'];
 
 export default class History extends Component {
+    static _initForm() {
+        let elem = document.querySelector('#select-user');
+        FormSelect.init(elem);
+    }
+
     _getExercises() {
-        this._clearTiles();
+        this.setState({loading: true});
         let date = this.state.date;
         ExercisesAPI.getExercises(this.state.username, date.getMonth() + 1, date.getFullYear())
             .then(response => response.json())
@@ -30,16 +35,13 @@ export default class History extends Component {
 
                     this.setState({monthData: data, activeDays, username});
                     this._selectDate(date);
+                    this.setState({loading: false});
                 }
             })
             .catch((error) => {
                 this.setState({error: 'There was an error.'});
                 console.log(error);
             });
-    }
-
-    _clearTiles() {
-        this.setState({activeDays: [], monthData: []});
     }
 
     componentWillMount() {
@@ -56,19 +58,22 @@ export default class History extends Component {
             today: new Date(),
             error: null,
             username: 'Stark',
-            activeDays: []
+            activeDays: [],
+            loading: true
         };
 
         this._selectDate = this._selectDate.bind(this);
         this._generateID = this._generateID.bind(this);
         this._selectUser = this._selectUser.bind(this);
-        this._clearTiles = this._clearTiles.bind(this);
         this.TILE_CLASS_NAME = 'gym-day';
     }
 
     componentDidMount() {
-        let elem = document.querySelector('#select-user');
-        FormSelect.init(elem);
+        History._initForm();
+    }
+
+    componentDidUpdate() {
+        History._initForm();
     }
 
     componentWillUnmount() {
@@ -76,7 +81,6 @@ export default class History extends Component {
     }
 
     _selectUser(e) {
-        this._clearTiles();
         this.setState({username: e.target.value}, () => this._getExercises());
     }
 
@@ -102,75 +106,77 @@ export default class History extends Component {
         return (
             <div>
                 <h2>History <span className="small">of house {this.state.username}</span></h2>
-                <div className="row eq-col-container">
-                    <div className="col eq-col s12 m6">
-                        <div className="input-field col s12">
-                            <select id="select-user"
-                                    value={this.state.username}
-                                    onChange={this._selectUser}>
-                                {HOUSES.map(
-                                    (house, index) =>
-                                        <option key={index} value={house}>{house}</option>
-                                )}
-                            </select>
-                            <label htmlFor="#select-user">Select user</label>
+                {this.state.loading ? <p> loading </p> :
+                    <div className="row eq-col-container">
+                        <div className="col eq-col s12 m6">
+                            <div className="input-field col s12">
+                                <select id="select-user"
+                                        value={this.state.username}
+                                        onChange={this._selectUser}>
+                                    {HOUSES.map(
+                                        (house, index) =>
+                                            <option key={index} value={house}>{house}</option>
+                                    )}
+                                </select>
+                                <label htmlFor="#select-user">Select user</label>
 
-                            <Calendar className="calendar"
-                                      onChange={this._selectDate}
-                                      maxDate={this.state.today}
-                                      value={this.state.date}
-                                      tileClassName={({date, view}) => {
-                                          let day = date.getDate();
-                                          let month = date.getMonth();
-                                          let year = date.getFullYear();
-                                          switch (view) {
-                                              case 'month':
-                                                  for (let activeDay of this.state.activeDays) {
-                                                      if (day === activeDay.getDate() && month === activeDay.getMonth()) {
-                                                          return this.TILE_CLASS_NAME;
+                                <Calendar className="calendar"
+                                          onChange={this._selectDate}
+                                          maxDate={this.state.today}
+                                          value={this.state.date}
+                                          tileClassName={({date, view}) => {
+                                              let day = date.getDate();
+                                              let month = date.getMonth();
+                                              let year = date.getFullYear();
+                                              switch (view) {
+                                                  case 'month':
+                                                      for (let activeDay of this.state.activeDays) {
+                                                          if (day === activeDay.getDate() && month === activeDay.getMonth()) {
+                                                              return this.TILE_CLASS_NAME;
+                                                          }
                                                       }
-                                                  }
-                                                  break;
-                                              case 'year':
-                                                  for (let activeDay of this.state.activeDays) {
-                                                      if (month === activeDay.getMonth() && year === activeDay.getFullYear()) {
-                                                          return this.TILE_CLASS_NAME;
+                                                      break;
+                                                  case 'year':
+                                                      for (let activeDay of this.state.activeDays) {
+                                                          if (month === activeDay.getMonth() && year === activeDay.getFullYear()) {
+                                                              return this.TILE_CLASS_NAME;
+                                                          }
                                                       }
-                                                  }
-                                                  break;
-                                              case 'decade':
-                                                  for (let activeDay of this.state.activeDays) {
-                                                      if (year === activeDay.getFullYear()) {
-                                                          return this.TILE_CLASS_NAME;
+                                                      break;
+                                                  case 'decade':
+                                                      for (let activeDay of this.state.activeDays) {
+                                                          if (year === activeDay.getFullYear()) {
+                                                              return this.TILE_CLASS_NAME;
+                                                          }
                                                       }
-                                                  }
-                                          }
-                                      }}/>
+                                              }
+                                          }}/>
+                            </div>
+                        </div>
+                        <div className="col eq-col s12 m6">
+                            <div className="scroll-menu">
+                                {this.state.dayData.length > 0 ? this.state.dayData.map(
+                                        (exercise, index) => {
+                                            return (
+                                                <ExerciseData key={index}
+                                                              index={index}
+                                                              reps={exercise.reps}
+                                                              weights={exercise.weights}
+                                                              name={exercise.exercise}
+                                                              exercise={exercise.exercise}
+                                                              startTimes={exercise.startTimes}
+                                                              endTimes={exercise.endTimes}
+                                                              id={this._generateID(index, exercise.startTimes[0])}
+                                                              picture={exercise.picture}
+                                                              timeDisplay={exercise.startTimes[0]}
+                                                />
+                                            )
+                                        }
+                                    ) : <DefaultMessage/>}
+                            </div>
                         </div>
                     </div>
-                    <div className="col eq-col s12 m6">
-                        <div className="scroll-menu">
-                            {this.state.dayData.length > 0 ? this.state.dayData.map(
-                                    (exercise, index) => {
-                                        return (
-                                            <ExerciseData key={index}
-                                                          index={index}
-                                                          reps={exercise.reps}
-                                                          weights={exercise.weights}
-                                                          name={exercise.exercise}
-                                                          exercise={exercise.exercise}
-                                                          startTimes={exercise.startTimes}
-                                                          endTimes={exercise.endTimes}
-                                                          id={this._generateID(index, exercise.startTimes[0])}
-                                                          picture={exercise.picture}
-                                                          timeDisplay={exercise.startTimes[0]}
-                                            />
-                                        )
-                                    }
-                                ) : <DefaultMessage/>}
-                        </div>
-                    </div>
-                </div>
+                }
             </div>
         );
     }
