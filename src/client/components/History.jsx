@@ -3,28 +3,34 @@ import Calendar from "react-calendar";
 import Chart from "chart.js";
 import {SEC_TO_MSEC, PING_INTERVAL_MSEC} from "../constants";
 import {ExercisesAPI} from "../../api/exercises";
+//noinspection JSUnresolvedVariable
+import {FormSelect} from "materialize-css";
 
 const {Component} = React;
+const HOUSES = ['Stark', 'Lannister', 'Targaryen', 'Baratheon', 'Greyjoy'];
 
 export default class History extends Component {
-    _getWorkouts() {
+    _getExercises() {
+        this._clearTiles();
         let date = this.state.date;
-        ExercisesAPI.getExercises('Stark', date.getMonth() + 1, date.getFullYear())
+        ExercisesAPI.getExercises(this.state.username, date.getMonth() + 1, date.getFullYear())
             .then(response => response.json())
             .then((jsonData) => {
-                let {username, data} = jsonData.data;
-                data = data.map((entry) => {
-                        entry.date = new Date(entry.date * SEC_TO_MSEC);
-                        return entry;
+                if (jsonData.data) {
+                    let {username, data} = jsonData.data;
+                    data = data.map((entry) => {
+                            entry.date = new Date(entry.date * SEC_TO_MSEC);
+                            return entry;
+                        }
+                    );
+                    let activeDays = [];
+                    for (let entry of data) {
+                        activeDays.push(entry.date);
                     }
-                );
-                let activeDays = [];
-                for (let entry of data) {
-                    activeDays.push(entry.date);
-                }
 
-                this.setState({monthData: data, activeDays, username});
-                this._selectDate(date);
+                    this.setState({monthData: data, activeDays, username});
+                    this._selectDate(date);
+                }
             })
             .catch((error) => {
                 this.setState({error: 'There was an error.'});
@@ -32,9 +38,13 @@ export default class History extends Component {
             });
     }
 
+    _clearTiles() {
+        this.setState({activeDays: [], monthData: []});
+    }
+
     componentWillMount() {
-        this._getWorkouts();
-        this.ping = setInterval(() => this._getWorkouts(), PING_INTERVAL_MSEC);
+        this._getExercises();
+        this.ping = setInterval(() => this._getExercises(), PING_INTERVAL_MSEC);
     }
 
     constructor(props) {
@@ -45,18 +55,29 @@ export default class History extends Component {
             dayData: [],
             today: new Date(),
             error: null,
-            username: null,
+            username: 'Stark',
             activeDays: []
         };
 
         this._selectDate = this._selectDate.bind(this);
         this._generateID = this._generateID.bind(this);
+        this._selectUser = this._selectUser.bind(this);
+        this._clearTiles = this._clearTiles.bind(this);
         this.TILE_CLASS_NAME = 'gym-day';
+    }
 
+    componentDidMount() {
+        let elem = document.querySelector('#select-user');
+        FormSelect.init(elem);
     }
 
     componentWillUnmount() {
         clearInterval(this.ping);
+    }
+
+    _selectUser(e) {
+        this._clearTiles();
+        this.setState({username: e.target.value}, () => this._getExercises());
     }
 
     _selectDate(date) {
@@ -80,41 +101,52 @@ export default class History extends Component {
     render() {
         return (
             <div>
-                <h2>History</h2>
+                <h2>History <span className="small">of house {this.state.username}</span></h2>
                 <div className="row eq-col-container">
                     <div className="col eq-col s12 m6">
-                        <Calendar className="calendar"
-                                  onChange={this._selectDate}
-                                  maxDate={this.state.today}
-                                  value={this.state.date}
-                                  tileClassName={({date, view}) => {
-                                      let day = date.getDate();
-                                      let month = date.getMonth();
-                                      let year = date.getFullYear();
+                        <div className="input-field col s12">
+                            <select id="select-user"
+                                    value={this.state.username}
+                                    onChange={this._selectUser}>
+                                {HOUSES.map(
+                                    (house, index) =>
+                                        <option key={index} value={house}>{house}</option>
+                                )}
+                            </select>
+                            <label htmlFor="#select-user">Select user</label>
 
-                                      switch (view) {
-                                          case 'month':
-                                              for (let activeDay of this.state.activeDays) {
-                                                  if (day === activeDay.getDate() && month === activeDay.getMonth()) {
-                                                      return this.TILE_CLASS_NAME;
+                            <Calendar className="calendar"
+                                      onChange={this._selectDate}
+                                      maxDate={this.state.today}
+                                      value={this.state.date}
+                                      tileClassName={({date, view}) => {
+                                          let day = date.getDate();
+                                          let month = date.getMonth();
+                                          let year = date.getFullYear();
+                                          switch (view) {
+                                              case 'month':
+                                                  for (let activeDay of this.state.activeDays) {
+                                                      if (day === activeDay.getDate() && month === activeDay.getMonth()) {
+                                                          return this.TILE_CLASS_NAME;
+                                                      }
                                                   }
-                                              }
-                                              break;
-                                          case 'year':
-                                              for (let activeDay of this.state.activeDays) {
-                                                  if (month === activeDay.getMonth() && year === activeDay.getFullYear()) {
-                                                      return this.TILE_CLASS_NAME;
+                                                  break;
+                                              case 'year':
+                                                  for (let activeDay of this.state.activeDays) {
+                                                      if (month === activeDay.getMonth() && year === activeDay.getFullYear()) {
+                                                          return this.TILE_CLASS_NAME;
+                                                      }
                                                   }
-                                              }
-                                              break;
-                                          case 'decade':
-                                              for (let activeDay of this.state.activeDays) {
-                                                  if (year === activeDay.getFullYear()) {
-                                                      return this.TILE_CLASS_NAME;
+                                                  break;
+                                              case 'decade':
+                                                  for (let activeDay of this.state.activeDays) {
+                                                      if (year === activeDay.getFullYear()) {
+                                                          return this.TILE_CLASS_NAME;
+                                                      }
                                                   }
-                                              }
-                                      }
-                                  }}/>
+                                          }
+                                      }}/>
+                        </div>
                     </div>
                     <div className="col eq-col s12 m6">
                         <div className="scroll-menu">
@@ -129,7 +161,10 @@ export default class History extends Component {
                                                           exercise={exercise.exercise}
                                                           startTimes={exercise.startTimes}
                                                           endTimes={exercise.endTimes}
-                                                          id={this._generateID(index, exercise.startTimes[0])}/>
+                                                          id={this._generateID(index, exercise.startTimes[0])}
+                                                          picture={exercise.picture}
+                                                          timeDisplay={exercise.startTimes[0]}
+                                            />
                                         )
                                     }
                                 ) : <DefaultMessage/>}
@@ -161,6 +196,23 @@ class DefaultMessage extends Component {
 }
 
 class ExerciseData extends Component {
+    static _formatDate(epoch) {
+        let date = new Date(epoch * SEC_TO_MSEC);
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            timezone: 'America/Los_Angeles'
+        });
+    }
+
+    static _sum(array) {
+        return array.reduce((a, b) => a + b);
+    }
+
+    static _average(array) {
+        return ExerciseData._sum(array) / array.length;
+    }
+
     _toggleClass() {
         document.querySelector(`#toggle-node-${this.props.id}`).classList.toggle('flip');
     }
@@ -187,16 +239,29 @@ class ExerciseData extends Component {
                         <div className="front">
                             <div className="card small">
                                 <div className="card-content">
-                                    <span className="card-title">{this.props.name}</span>
-                                    <Graph key={this.props.index}
-                                           id={`graph-${this.props.id}`}
-                                           reps={this.props.reps}
-                                           weights={this.props.weights}
-                                           startTimes={this.props.startTimes}
-                                           endTimes={this.props.endTimes}/>
+                                    <div className="card-image">
+                                        <img src={
+                                            this.props.picture ?
+                                                `data:image/png;base64, ${this.props.picture}` :
+                                                'https://cdn-maf0.heartyhosting.com/sites/muscleandfitness.com/files/styles/full_node_image_1090x614/public/media/ArnoldRealTitlePic.jpg?itok=MxniX-9P'}/>
+                                        <span className="card-title">
+                                            {ExerciseData._formatDate(this.props.timeDisplay)}
+                                        </span>
+                                    </div>
+                                    <div className="row">
+                                        <h5 className="col s12 center-align"><b>{this.props.name}</b></h5>
+                                        <p className="col s6 center-align">
+                                            <u>Total reps:</u> <br/>
+                                            {ExerciseData._sum(this.props.reps)}
+                                        </p>
+                                        <p className="col s6 center-align">
+                                            <u>Average weight:</u> <br/>
+                                            {ExerciseData._average(this.props.weights)} lbs
+                                        </p>
+                                    </div>
                                     <a onClick={this._toggleClass}
                                        className="btn-floating halfway-fab red">
-                                        <i className="material-icons">flip_to_back</i>
+                                        <i className="material-icons">flip_to_front</i>
                                     </a>
                                 </div>
                             </div>
@@ -205,13 +270,17 @@ class ExerciseData extends Component {
                         <div className="back">
                             <div className="card small">
                                 <div className="card-content">
-                                    <div className="card-image">
-                                        <img src="https://ae01.alicdn.com/kf/HTB1j47Lczgy_uJjSZTEq6AYkFXaC/DIY-frame-Arnold-Schwarzenegger-Terminator-Great-Muscle-Poster-Bodybuilding-Gym-Decor.jpg_640x640.jpg"/>
-                                        <span className="card-title">{this.props.name}</span>
-                                    </div>
+                                    <span className="card-title"><b>{this.props.name}</b></span>
+                                    <Graph key={this.props.index}
+                                           id={`graph-${this.props.id}`}
+                                           reps={this.props.reps}
+                                           weights={this.props.weights}
+                                           startTimes={this.props.startTimes}
+                                           endTimes={this.props.endTimes}/>
+                                    <h5 className="center-align">{ExerciseData._formatDate(this.props.timeDisplay)}</h5>
                                     <a onClick={this._toggleClass}
                                        className="btn-floating halfway-fab red">
-                                        <i className="material-icons">flip_to_front</i>
+                                        <i className="material-icons">flip_to_back</i>
                                     </a>
                                 </div>
                             </div>
@@ -239,8 +308,18 @@ class Graph extends Component {
                 labels: Graph._getLabels(this.props.weights),
                 datasets: [{
                     label: '# of reps',
-                    data: this.props.reps.slice()
+                    data: this.props.reps.slice(),
+                    backgroundColor: 'rgba(182, 215, 168, 0.4)'
                 }]
+            },
+            options: {
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
             }
         });
     }
