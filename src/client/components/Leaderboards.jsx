@@ -1,16 +1,19 @@
 import React from "react";
 import {LeaderboardsAPI} from "../../api/leaderboards.js";
 import {PING_INTERVAL_MSEC} from "../constants.js";
+import {LoadingIcon} from "./LoadingIcon.jsx";
 
 const {Component} = React;
 
 export default class Leaderboards extends Component {
     _getLeaderboards() {
+        this.setState({loading: true});
         LeaderboardsAPI.getLeaderboards()
             .then(response => response.json())
             .then((jsonData) => {
                 this.state.leaderboards = jsonData.data;
                 this.state.table = jsonData.data;
+                this.setState({loading: false});
             })
             .catch((error) => {
                 this.setState({error: 'There was an error.'});
@@ -27,7 +30,7 @@ export default class Leaderboards extends Component {
         super(props);
         this.sortBy = 'reps';
         this.reverseOrder = false;
-        this.state = {leaderboards: [], table: [], error: null, filterBy: ''};
+        this.state = {leaderboards: [], table: [], error: null, filterBy: '', loading: true};
 
         this._sort = this._sort.bind(this);
         this._filterTable = this._filterTable.bind(this);
@@ -108,30 +111,31 @@ export default class Leaderboards extends Component {
                         </form>
                     </div>
                 </nav>
-
-                <table className="highlight responsive-table">
-                    <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th className="hover-pointer" onClick={(e) => this._sort('reps', e)}>
-                            Reps
-                        </th>
-                        <th className="hover-pointer" onClick={(e) => this._sort('weights', e)}>
-                            Weights
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {this.state.table.map(
-                        (row, index) =>
-                            <tr key={index}>
-                                <td>{row.username}</td>
-                                <td>{row.reps}</td>
-                                <td>{row.weights}</td>
-                            </tr>
-                    )}
-                    </tbody>
-                </table>
+                {this.state.loading ? <LoadingIcon/> :
+                    <table className="highlight responsive-table">
+                        <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th className="hover-pointer" onClick={(e) => this._sort('reps', e)}>
+                                Reps
+                            </th>
+                            <th className="hover-pointer" onClick={(e) => this._sort('weights', e)}>
+                                Weights
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {this.state.table.map(
+                            (row, index) =>
+                                <tr key={index}>
+                                    <td>{row.username}</td>
+                                    <td>{row.reps}</td>
+                                    <td>{row.weights}</td>
+                                </tr>
+                        )}
+                        </tbody>
+                    </table>
+                }
             </div>
         );
     }

@@ -5,13 +5,19 @@ import {SEC_TO_MSEC, PING_INTERVAL_MSEC} from "../constants";
 import {ExercisesAPI} from "../../api/exercises";
 //noinspection JSUnresolvedVariable
 import {FormSelect} from "materialize-css";
+import {LoadingIcon} from "./LoadingIcon.jsx";
 
 const {Component} = React;
 const HOUSES = ['Stark', 'Lannister', 'Targaryen', 'Baratheon', 'Greyjoy'];
 
 export default class History extends Component {
+    static _initForm() {
+        let elem = document.querySelector('#select-user');
+        FormSelect.init(elem);
+    }
+
     _getExercises() {
-        this._clearTiles();
+        this.setState({loading: true});
         let date = this.state.date;
         ExercisesAPI.getExercises(this.state.username, date.getMonth() + 1, date.getFullYear())
             .then(response => response.json())
@@ -30,16 +36,13 @@ export default class History extends Component {
 
                     this.setState({monthData: data, activeDays, username});
                     this._selectDate(date);
+                    this.setState({loading: false});
                 }
             })
             .catch((error) => {
                 this.setState({error: 'There was an error.'});
                 console.log(error);
             });
-    }
-
-    _clearTiles() {
-        this.setState({activeDays: [], monthData: []});
     }
 
     componentWillMount() {
@@ -56,19 +59,22 @@ export default class History extends Component {
             today: new Date(),
             error: null,
             username: 'Stark',
-            activeDays: []
+            activeDays: [],
+            loading: true
         };
 
         this._selectDate = this._selectDate.bind(this);
         this._generateID = this._generateID.bind(this);
         this._selectUser = this._selectUser.bind(this);
-        this._clearTiles = this._clearTiles.bind(this);
         this.TILE_CLASS_NAME = 'gym-day';
     }
 
     componentDidMount() {
-        let elem = document.querySelector('#select-user');
-        FormSelect.init(elem);
+        History._initForm();
+    }
+
+    componentDidUpdate() {
+        History._initForm();
     }
 
     componentWillUnmount() {
@@ -76,7 +82,6 @@ export default class History extends Component {
     }
 
     _selectUser(e) {
-        this._clearTiles();
         this.setState({username: e.target.value}, () => this._getExercises());
     }
 
@@ -149,26 +154,28 @@ export default class History extends Component {
                         </div>
                     </div>
                     <div className="col eq-col s12 m6">
-                        <div className="scroll-menu">
-                            {this.state.dayData.length > 0 ? this.state.dayData.map(
-                                    (exercise, index) => {
-                                        return (
-                                            <ExerciseData key={index}
-                                                          index={index}
-                                                          reps={exercise.reps}
-                                                          weights={exercise.weights}
-                                                          name={exercise.exercise}
-                                                          exercise={exercise.exercise}
-                                                          startTimes={exercise.startTimes}
-                                                          endTimes={exercise.endTimes}
-                                                          id={this._generateID(index, exercise.startTimes[0])}
-                                                          picture={exercise.picture}
-                                                          timeDisplay={exercise.startTimes[0]}
-                                            />
-                                        )
-                                    }
-                                ) : <DefaultMessage/>}
-                        </div>
+                        {this.state.loading ? <LoadingIcon/> :
+                            <div className="scroll-menu">
+                                {this.state.dayData.length > 0 ? this.state.dayData.map(
+                                        (exercise, index) => {
+                                            return (
+                                                <ExerciseData key={index}
+                                                              index={index}
+                                                              reps={exercise.reps}
+                                                              weights={exercise.weights}
+                                                              name={exercise.exercise}
+                                                              exercise={exercise.exercise}
+                                                              startTimes={exercise.startTimes}
+                                                              endTimes={exercise.endTimes}
+                                                              id={this._generateID(index, exercise.startTimes[0])}
+                                                              picture={exercise.picture}
+                                                              timeDisplay={exercise.startTimes[0]}
+                                                />
+                                            )
+                                        }
+                                    ) : <DefaultMessage/>}
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
