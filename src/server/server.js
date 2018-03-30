@@ -2,7 +2,7 @@ import express from 'express';
 import React from 'react';
 
 const app = express();
-const PORT = 8081;
+const PORT = 8080;
 
 app
     .use(express.static(`${__dirname}/../../`))
