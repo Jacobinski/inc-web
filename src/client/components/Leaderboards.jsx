@@ -96,7 +96,7 @@ export default class Leaderboards extends Component {
 
                 <nav>
                     <div className="nav-wrapper teal lighten-2">
-                        <form autoComplete="off">
+                        <form autoComplete="off" onSubmit={(e) => e.preventDefault()}>
                             <div className="input-field">
                                 <input id="search"
                                        type="search"
@@ -111,6 +111,7 @@ export default class Leaderboards extends Component {
                         </form>
                     </div>
                 </nav>
+
                 {this.state.loading ? <LoadingIcon/> :
                     <table className="highlight responsive-table">
                         <thead>
