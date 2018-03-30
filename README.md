@@ -28,7 +28,17 @@
 4. add google chrome [react devtools extension](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi/)
 
 ## Running
-1. transpile `npm run build`
-2. run webpack `npm run webpack`
-3. start the server `npm start`
+1. transpile `$ npm run build`
+2. run webpack `$ npm run webpack`
+3. start the server `$ npm start`
 4. visit `localhost:8081` in your browser
+
+## Deploying
+1. download [gcloud SDK](https://cloud.google.com/sdk/docs/)
+2. configure project `$ gcloud config set project inc-web`
+3. deploy `$ gcloud app deploy`
+4. visit `http://inc-web.appspot.com`
+ 
+    > note: https won't work since AWS EC2 instance (dbs) is not https - must use http
+
+5. logs `$ gcloud app logs read` 
