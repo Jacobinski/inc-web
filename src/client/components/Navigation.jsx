@@ -1,16 +1,15 @@
-import React from 'react';
-import {Link, Route} from 'react-router-dom';
-import Planner from './Planner.jsx';
-import Leaderboards from './Leaderboards.jsx';
-import Feed from './Feed.jsx';
-import History from './History.jsx';
+import React from "react";
+import {Link, Route} from "react-router-dom";
+import Index from "./Index.jsx";
+import Leaderboards from "./Leaderboards.jsx";
+import History from "./History.jsx";
 //noinspection JSUnresolvedVariable
-import {Sidenav} from 'materialize-css';
+import {Sidenav} from "materialize-css";
 
 const {Component} = React;
 const VIEWS = [
     /* {id: 1, path: '/planner', title: 'Planner', component: Planner},
-    {id: 2, path: '/feed', title: 'Feed', component: Feed},*/
+     {id: 2, path: '/feed', title: 'Feed', component: Feed},*/
     {id: 3, path: '/history', title: 'History', component: History},
     {id: 4, path: '/leaderboards', title: 'Leaderboards', component: Leaderboards}
 ];
@@ -80,6 +79,7 @@ export class Content extends Component {
     render() {
         return (
             <div className="container">
+                <Route exact path={'/'} component={Index}/>
                 {VIEWS.map(view =>
                     <Route key={view.id} path={view.path} component={view.component}/>
                 )}
