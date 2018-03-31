@@ -9,7 +9,7 @@ export default class Index extends Component {
         return (
             <div className="row">
                 <div className="col s12">
-                    <img src={gainsofthrones} />
+                    <img src={gainsofthrones} className="responsive-img"/>
                 </div>
             </div>
         );

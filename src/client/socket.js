@@ -1,3 +1,4 @@
+import {DEV_SOCKET_BASE, PROD_SOCKET_BASE} from "../client/constants.js";
 import socketIOClient from "socket.io-client";
 
 export default class Socket {
@@ -14,7 +15,7 @@ export default class Socket {
     }
 
     constructor(onConnect = Socket.onDefaultConnect, onDisconnect = Socket.onDefaultDisconnect) {
-        this.io = socketIOClient('http://0.0.0.0:8000');
+        this.io = socketIOClient(PROD_SOCKET_BASE);
         this.io.on('connect', () => onConnect());
         this.io.on('disconnect', () => onDisconnect());
     }
