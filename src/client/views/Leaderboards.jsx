@@ -2,8 +2,8 @@ import React from "react";
 import Socket from "../socket.js";
 
 import {LeaderboardsAPI} from "../../api/leaderboards.js";
-import {LoadingIcon} from "./LoadingIcon.jsx";
-import DefaultMessage from "./DefaultMessage.jsx";
+import {LoadingIcon} from "../components/LoadingIcon.jsx";
+import DefaultMessage from "../components/DefaultMessage.jsx";
 import {toast} from "materialize-css";
 
 const {Component} = React;

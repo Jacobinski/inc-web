@@ -1,8 +1,8 @@
 import React from "react";
 import Socket from "../socket.js";
 
-import {LoadingIcon} from "./LoadingIcon.jsx";
-import DefaultMessage from "./DefaultMessage.jsx";
+import {LoadingIcon} from "../components/LoadingIcon.jsx";
+import DefaultMessage from "../components/DefaultMessage.jsx";
 import Calendar from "react-calendar";
 import Chart from "chart.js";
 import {ExercisesAPI} from "../../api/exercises";

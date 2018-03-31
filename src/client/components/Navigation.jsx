@@ -1,8 +1,8 @@
 import React from "react";
 import {Link, Route} from "react-router-dom";
-import Index from "./Index.jsx";
-import Leaderboards from "./Leaderboards.jsx";
-import History from "./History.jsx";
+import Index from "../views/Index.jsx";
+import Leaderboards from "../views/Leaderboards.jsx";
+import History from "../views/History.jsx";
 //noinspection JSUnresolvedVariable
 import {Sidenav} from "materialize-css";
 
