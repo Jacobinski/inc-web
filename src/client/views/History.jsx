@@ -91,6 +91,10 @@ export default class History extends Component {
         History._initForm();
     }
 
+    componentWillUnmount() {
+        this.socket.close();
+    }
+
     _selectUser(e) {
         this.setState({username: e.target.value}, () => this._getExercises());
     }

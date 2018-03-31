@@ -22,4 +22,8 @@ export default class Socket {
     on(event, onEvent = Socket.onDefaultEvent(event)) {
         this.io.on(event, onEvent);
     }
+
+    close() {
+        this.io.close();
+    }
 }

@@ -33,6 +33,10 @@ export default class Leaderboards extends Component {
         this._getLeaderboards();
     }
 
+    componentWillUnmount() {
+        this.socket.close();
+    }
+
     constructor(props) {
         super(props);
         this.sortBy = 'reps';
