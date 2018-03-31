@@ -1,13 +1,15 @@
 import React from "react";
+import Socket from "../socket.js";
+
+import {LoadingIcon} from "./LoadingIcon.jsx";
+import DefaultMessage from "./DefaultMessage.jsx";
 import Calendar from "react-calendar";
 import Chart from "chart.js";
-import {SEC_TO_MSEC, PING_INTERVAL_MSEC} from "../constants";
 import {ExercisesAPI} from "../../api/exercises";
 //noinspection JSUnresolvedVariable
 import {FormSelect} from "materialize-css";
-import {LoadingIcon} from "./LoadingIcon.jsx";
-import DefaultMessage from "./DefaultMessage.jsx";
 
+import {SEC_TO_MSEC} from "../constants";
 const {Component} = React;
 const HOUSES = ['Stark', 'Lannister', 'Targaryen', 'Baratheon', 'Greyjoy'];
 
@@ -48,7 +50,6 @@ export default class History extends Component {
 
     componentWillMount() {
         this._getExercises();
-        this.ping = setInterval(() => this._getExercises(), PING_INTERVAL_MSEC);
     }
 
     constructor(props) {
@@ -69,6 +70,9 @@ export default class History extends Component {
         this._selectUser = this._selectUser.bind(this);
         this.TILE_CLASS_NAME = 'gym-day';
         this.DEFAULT_MESSAGE = 'Your completed workouts will show here.  Days where you worked out are highlighted.';
+        this.socket = new Socket();
+
+        this.socket.on('update', () => this._getExercises());
     }
 
     componentDidMount() {
@@ -77,10 +81,6 @@ export default class History extends Component {
 
     componentDidUpdate() {
         History._initForm();
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.ping);
     }
 
     _selectUser(e) {
