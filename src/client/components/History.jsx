@@ -7,7 +7,7 @@ import Calendar from "react-calendar";
 import Chart from "chart.js";
 import {ExercisesAPI} from "../../api/exercises";
 //noinspection JSUnresolvedVariable
-import {FormSelect} from "materialize-css";
+import {FormSelect, toast} from "materialize-css";
 
 import {SEC_TO_MSEC} from "../constants";
 const {Component} = React;
@@ -48,6 +48,11 @@ export default class History extends Component {
             });
     }
 
+    _onUpdate() {
+        toast({html: '<span>Data updated</span>'});
+        this._getExercises();
+    }
+
     componentWillMount() {
         this._getExercises();
     }
@@ -72,7 +77,7 @@ export default class History extends Component {
         this.DEFAULT_MESSAGE = 'Your completed workouts will show here.  Days where you worked out are highlighted.';
         this.socket = new Socket();
 
-        this.socket.on('update', () => this._getExercises());
+        this.socket.on('update', () => this._onUpdate());
     }
 
     componentDidMount() {
