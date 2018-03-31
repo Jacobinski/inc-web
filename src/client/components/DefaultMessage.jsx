@@ -15,7 +15,7 @@ export default class DefaultMessage extends Component {
                     </div>
                     {this.props.message ?
                         <div className="card-content">
-                            <p>{this.props.message}</p>
+                            <blockquote><code>{this.props.message}</code></blockquote>
                         </div> : null}
                 </div>
             </div>

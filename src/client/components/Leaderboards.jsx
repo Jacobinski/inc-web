@@ -70,7 +70,6 @@ export default class Leaderboards extends Component {
     _filterTable(e) {
         let filterBy = e.target.value;
         this.setState({filterBy});
-        console.log(this.state.leaderboards);
 
         let table = this.state.leaderboards.filter(
             (item) => {
@@ -101,6 +100,7 @@ export default class Leaderboards extends Component {
                                        type="search"
                                        value={this.state.filterBy}
                                        onChange={(e) => this._filterTable(e)}
+                                       maxLength="20"
                                        placeholder="username"/>
                                 <label className="label-icon" htmlFor="search">
                                     <i className="material-icons">search</i>
@@ -132,12 +132,12 @@ export default class Leaderboards extends Component {
                                         <tr key={index}>
                                             <td>{row.username}</td>
                                             <td>{row.reps}</td>
-                                            <td>{row.weights}</td>
+                                            <td>{row.weights} lbs</td>
                                         </tr>
                                 )}
                                 </tbody>
                             </table> :
-                            <DefaultMessage message="No users by that username"/> :
+                            <DefaultMessage message={`No users match '${this.state.filterBy}'`}/> :
                         <DefaultMessage/>
                 }
             </div>

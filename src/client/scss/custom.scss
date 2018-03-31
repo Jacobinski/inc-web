@@ -48,11 +48,14 @@ div.scroll-menu .scroll-menu-item {
 
 .default-message .card-content {
   width: 100%;
-}
-
-.default-message .card-content p {
   word-wrap: break-word;
   white-space: normal;
+  padding: 12px;
+}
+
+.default-message .card-content blockquote {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .eq-col-container {
