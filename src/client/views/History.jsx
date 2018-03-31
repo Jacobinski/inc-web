@@ -3,11 +3,12 @@ import Socket from "../socket.js";
 
 import {LoadingIcon} from "../components/LoadingIcon.jsx";
 import DefaultMessage from "../components/DefaultMessage.jsx";
+import Toast from "../components/Toast.jsx";
 import Calendar from "react-calendar";
 import Chart from "chart.js";
 import {ExercisesAPI} from "../../api/exercises";
 //noinspection JSUnresolvedVariable
-import {FormSelect, toast} from "materialize-css";
+import {FormSelect} from "materialize-css";
 
 import {SEC_TO_MSEC} from "../constants";
 const {Component} = React;
@@ -49,7 +50,7 @@ export default class History extends Component {
     }
 
     _onUpdate() {
-        toast({html: '<span>Data updated</span>'});
+        new Toast('History updated!');
         this._getExercises();
     }
 
@@ -73,10 +74,12 @@ export default class History extends Component {
         this._selectDate = this._selectDate.bind(this);
         this._generateID = this._generateID.bind(this);
         this._selectUser = this._selectUser.bind(this);
+        this._onUpdate = this._onUpdate.bind(this);
+
         this.TILE_CLASS_NAME = 'gym-day';
         this.DEFAULT_MESSAGE = 'Your completed workouts will show here.  Days where you worked out are highlighted.';
-        this.socket = new Socket();
 
+        this.socket = new Socket();
         this.socket.on('update', this._onUpdate);
     }
 

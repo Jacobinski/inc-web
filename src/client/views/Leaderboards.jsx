@@ -4,7 +4,7 @@ import Socket from "../socket.js";
 import {LeaderboardsAPI} from "../../api/leaderboards.js";
 import {LoadingIcon} from "../components/LoadingIcon.jsx";
 import DefaultMessage from "../components/DefaultMessage.jsx";
-import {toast} from "materialize-css";
+import Toast from "../components/Toast.jsx";
 
 const {Component} = React;
 
@@ -25,7 +25,7 @@ export default class Leaderboards extends Component {
     }
 
     _onUpdate() {
-        toast({html: '<span>Data updated</span>'});
+        new Toast('Leaderboards updated!');
         this._getLeaderboards();
     }
 
@@ -43,6 +43,7 @@ export default class Leaderboards extends Component {
         this._filterTable = this._filterTable.bind(this);
         this._clearFilter = this._clearFilter.bind(this);
         this._getLeaderboards = this._getLeaderboards.bind(this);
+        this._onUpdate = this._onUpdate.bind(this);
 
         this.socket = new Socket();
         this.socket.on('update', this._onUpdate);
