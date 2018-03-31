@@ -13,7 +13,7 @@ export default class Socket {
         console.log(event);
     }
 
-    constructor(onConnect = Socket.onDefaultConnect, onDisconnect = Socket.onDefaultDisconnect()) {
+    constructor(onConnect = Socket.onDefaultConnect, onDisconnect = Socket.onDefaultDisconnect) {
         this.io = socketIOClient('http://0.0.0.0:8000');
         this.io.on('connect', () => onConnect());
         this.io.on('disconnect', () => onDisconnect());

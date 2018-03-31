@@ -34,10 +34,6 @@ export default class Leaderboards extends Component {
         this.socket.on('update', this._onUpdate);
     }
 
-    componentWillUnmount() {
-        this.socket.close();
-    }
-
     constructor(props) {
         super(props);
         this.sortBy = 'reps';
@@ -56,6 +52,10 @@ export default class Leaderboards extends Component {
 
     componentDidMount() {
         this._sort(this.sortBy);
+    }
+
+    componentWillUnmount() {
+        this.socket.close();
     }
 
     _sort(sortby) {
