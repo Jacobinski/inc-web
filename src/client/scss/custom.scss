@@ -1,21 +1,21 @@
 /* width */
 ::-webkit-scrollbar {
-    width: 10px;
+  width: 10px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+  background: #f1f1f1;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: #888;
+  background: #888;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+  background: #555;
 }
 
 .small {
@@ -24,9 +24,9 @@
 
 div.scroll-menu {
   overflow-x: scroll;
+  overflow-y: hidden;
   white-space: nowrap;
   height: 100%;
-
 }
 
 div.scroll-menu .scroll-menu-item {
@@ -35,17 +35,32 @@ div.scroll-menu .scroll-menu-item {
   margin-left: 0.5em;
 }
 
+.default-message-wrapper {
+  text-align: center;
+}
+
 .default-message {
-  margin-right: 1em;
-  margin-left: 1em;
+  margin-left: 10px;
+  margin-right: 10px;
+  max-width: 390px;
+  display: inline-block;
+}
+
+.default-message .card-content {
+  width: 100%;
+}
+
+.default-message .card-content p {
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .eq-col-container {
-  height: 385px;
+  height: 400px;
 }
 
 .eq-col {
-  height: 385px;
+  height: 400px;
 }
 
 .calendar {

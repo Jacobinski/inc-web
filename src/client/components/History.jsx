@@ -6,6 +6,7 @@ import {ExercisesAPI} from "../../api/exercises";
 //noinspection JSUnresolvedVariable
 import {FormSelect} from "materialize-css";
 import {LoadingIcon} from "./LoadingIcon.jsx";
+import DefaultMessage from "./DefaultMessage.jsx";
 
 const {Component} = React;
 const HOUSES = ['Stark', 'Lannister', 'Targaryen', 'Baratheon', 'Greyjoy'];
@@ -67,6 +68,7 @@ export default class History extends Component {
         this._generateID = this._generateID.bind(this);
         this._selectUser = this._selectUser.bind(this);
         this.TILE_CLASS_NAME = 'gym-day';
+        this.DEFAULT_MESSAGE = 'Your completed workouts will show here.  Days where you worked out are highlighted.';
     }
 
     componentDidMount() {
@@ -173,29 +175,10 @@ export default class History extends Component {
                                                 />
                                             )
                                         }
-                                    ) : <DefaultMessage/>}
+                                    ) : <DefaultMessage message={this.DEFAULT_MESSAGE}/>}
                             </div>
                         }
                     </div>
-                </div>
-            </div>
-        );
-    }
-}
-
-class DefaultMessage extends Component {
-    render() {
-        return (
-            <div className="card default-message">
-                <div className="card-content">
-                            <span className="card-title">
-                                If the bar ain't bending <br/>
-                                You just pretending
-                            </span>
-                    <ul>
-                        <li>Your completed workouts will show here.</li>
-                        <li>Days where you worked out are highlighted.</li>
-                    </ul>
                 </div>
             </div>
         );
