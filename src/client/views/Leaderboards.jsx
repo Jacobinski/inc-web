@@ -29,8 +29,9 @@ export default class Leaderboards extends Component {
         this._getLeaderboards();
     }
 
-    componentWillMount() {
+    _onConnect() {
         this._getLeaderboards();
+        this.socket.on('update', this._onUpdate);
     }
 
     componentWillUnmount() {
@@ -47,10 +48,10 @@ export default class Leaderboards extends Component {
         this._filterTable = this._filterTable.bind(this);
         this._clearFilter = this._clearFilter.bind(this);
         this._getLeaderboards = this._getLeaderboards.bind(this);
+        this._onConnect = this._onConnect.bind(this);
         this._onUpdate = this._onUpdate.bind(this);
 
-        this.socket = new Socket();
-        this.socket.on('update', this._onUpdate);
+        this.socket = new Socket(this._onConnect);
     }
 
     componentDidMount() {

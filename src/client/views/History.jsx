@@ -49,12 +49,13 @@ export default class History extends Component {
             });
     }
 
-    _onUpdate() {
-        new Toast('History updated!');
+    _onConnect() {
         this._getExercises();
+        this.socket.on('update', this._onUpdate);
     }
 
-    componentWillMount() {
+    _onUpdate() {
+        new Toast('History updated!');
         this._getExercises();
     }
 
@@ -74,13 +75,13 @@ export default class History extends Component {
         this._selectDate = this._selectDate.bind(this);
         this._generateID = this._generateID.bind(this);
         this._selectUser = this._selectUser.bind(this);
+        this._onConnect = this._onConnect.bind(this);
         this._onUpdate = this._onUpdate.bind(this);
 
         this.TILE_CLASS_NAME = 'gym-day';
         this.DEFAULT_MESSAGE = 'Your completed workouts will show here.  Days where you worked out are highlighted.';
 
-        this.socket = new Socket();
-        this.socket.on('update', this._onUpdate);
+        this.socket = new Socket(this._onConnect);
     }
 
     componentDidMount() {
