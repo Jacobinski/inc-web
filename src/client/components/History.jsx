@@ -36,8 +36,8 @@ export default class History extends Component {
 
                     this.setState({monthData: data, activeDays, username});
                     this._selectDate(date);
-                    this.setState({loading: false});
                 }
+                this.setState({loading: false});
             })
             .catch((error) => {
                 this.setState({error: 'There was an error.'});
