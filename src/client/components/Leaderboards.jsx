@@ -1,8 +1,11 @@
 import React from "react";
+import Socket from "../socket.js";
+
 import {LeaderboardsAPI} from "../../api/leaderboards.js";
-import {PING_INTERVAL_MSEC} from "../constants.js";
 import {LoadingIcon} from "./LoadingIcon.jsx";
 import DefaultMessage from "./DefaultMessage.jsx";
+import {toast} from "materialize-css";
+
 const {Component} = React;
 
 export default class Leaderboards extends Component {
@@ -21,9 +24,13 @@ export default class Leaderboards extends Component {
             });
     }
 
+    _onUpdate() {
+        toast({html: '<span>Data updated</span>'});
+        this._getLeaderboards();
+    }
+
     componentWillMount() {
         this._getLeaderboards();
-        this.ping = setInterval(() => this._getLeaderboards(), PING_INTERVAL_MSEC);
     }
 
     constructor(props) {
@@ -36,14 +43,13 @@ export default class Leaderboards extends Component {
         this._filterTable = this._filterTable.bind(this);
         this._clearFilter = this._clearFilter.bind(this);
         this._getLeaderboards = this._getLeaderboards.bind(this);
+
+        this.socket = new Socket();
+        this.socket.on('update', this._onUpdate);
     }
 
     componentDidMount() {
         this._sort(this.sortBy);
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.ping);
     }
 
     _sort(sortby) {
@@ -127,7 +133,7 @@ export default class Leaderboards extends Component {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {this.state.leaderboards.map(
+                                {this.state.table.map(
                                     (row, index) =>
                                         <tr key={index}>
                                             <td>{row.username}</td>

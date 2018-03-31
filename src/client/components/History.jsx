@@ -77,7 +77,7 @@ export default class History extends Component {
         this.DEFAULT_MESSAGE = 'Your completed workouts will show here.  Days where you worked out are highlighted.';
         this.socket = new Socket();
 
-        this.socket.on('update', () => this._onUpdate());
+        this.socket.on('update', this._onUpdate);
     }
 
     componentDidMount() {
