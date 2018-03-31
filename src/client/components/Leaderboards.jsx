@@ -2,7 +2,7 @@ import React from "react";
 import {LeaderboardsAPI} from "../../api/leaderboards.js";
 import {PING_INTERVAL_MSEC} from "../constants.js";
 import {LoadingIcon} from "./LoadingIcon.jsx";
-
+import DefaultMessage from "./DefaultMessage.jsx";
 const {Component} = React;
 
 export default class Leaderboards extends Component {
@@ -93,7 +93,6 @@ export default class Leaderboards extends Component {
         return (
             <div>
                 <h2>Leaderboards</h2>
-
                 <nav>
                     <div className="nav-wrapper teal lighten-2">
                         <form autoComplete="off" onSubmit={(e) => e.preventDefault()}>
@@ -113,29 +112,33 @@ export default class Leaderboards extends Component {
                 </nav>
 
                 {this.state.loading ? <LoadingIcon/> :
-                    <table className="highlight responsive-table">
-                        <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th className="hover-pointer" onClick={(e) => this._sort('reps', e)}>
-                                Reps
-                            </th>
-                            <th className="hover-pointer" onClick={(e) => this._sort('weights', e)}>
-                                Weights
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {this.state.table.map(
-                            (row, index) =>
-                                <tr key={index}>
-                                    <td>{row.username}</td>
-                                    <td>{row.reps}</td>
-                                    <td>{row.weights}</td>
+                    this.state.leaderboards.length ?
+                        this.state.table.length ?
+                            <table className="highlight responsive-table">
+                                <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th className="hover-pointer" onClick={(e) => this._sort('reps', e)}>
+                                        Reps
+                                    </th>
+                                    <th className="hover-pointer" onClick={(e) => this._sort('weights', e)}>
+                                        Weights
+                                    </th>
                                 </tr>
-                        )}
-                        </tbody>
-                    </table>
+                                </thead>
+                                <tbody>
+                                {this.state.leaderboards.map(
+                                    (row, index) =>
+                                        <tr key={index}>
+                                            <td>{row.username}</td>
+                                            <td>{row.reps}</td>
+                                            <td>{row.weights}</td>
+                                        </tr>
+                                )}
+                                </tbody>
+                            </table> :
+                            <DefaultMessage message="No users by that username"/> :
+                        <DefaultMessage/>
                 }
             </div>
         );
