@@ -16,8 +16,8 @@ export default class Socket {
 
     constructor(onConnect = Socket.onDefaultConnect, onDisconnect = Socket.onDefaultDisconnect) {
         this.io = socketIOClient(PROD_SOCKET_BASE);
-        this.io.on('connect', () => onConnect());
-        this.io.on('disconnect', () => onDisconnect());
+        this.io.on('connect', onConnect);
+        this.io.on('disconnect', onDisconnect);
     }
 
     on(event, onEvent = Socket.onDefaultEvent(event)) {

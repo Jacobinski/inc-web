@@ -1,20 +1,29 @@
+.house-cards {
+  margin-top: 25px;
+}
+
+.house-card {
+  height: 480px;
+  width: 250px;
+}
+
 /* width */
-::-webkit-scrollbar {
+div.scroll-menu::-webkit-scrollbar {
   width: 10px;
 }
 
 /* Track */
-::-webkit-scrollbar-track {
+div.scroll-menu::-webkit-scrollbar-track {
   background: #f1f1f1;
 }
 
 /* Handle */
-::-webkit-scrollbar-thumb {
+div.scroll-menu::-webkit-scrollbar-thumb {
   background: #888;
 }
 
 /* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
+div.scroll-menu::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
 
@@ -46,7 +55,7 @@ div.scroll-menu .scroll-menu-item {
   display: inline-block;
 }
 
-.default-message .card-content {
+.default-message .card-content, .house-card .card-content, .house-card .card-reveal {
   width: 100%;
   word-wrap: break-word;
   white-space: normal;

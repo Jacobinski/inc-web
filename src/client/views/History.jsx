@@ -10,9 +10,8 @@ import {ExercisesAPI} from "../../api/exercises";
 //noinspection JSUnresolvedVariable
 import {FormSelect} from "materialize-css";
 
-import {SEC_TO_MSEC} from "../constants";
+import {SEC_TO_MSEC, HOUSES} from "../constants";
 const {Component} = React;
-const HOUSES = ['Stark', 'Lannister', 'Targaryen', 'Baratheon', 'Greyjoy'];
 
 export default class History extends Component {
     static _initForm() {
