@@ -1,7 +1,8 @@
-const EXERCISES_ENDPOINT = 'http://ec2-54-215-137-120.us-west-1.compute.amazonaws.com/api/exercises';
+import {DEV_URL_BASE, PROD_URL_BASE, EXERCISES_ENDPOINT} from "../client/constants.js";
+const EXERCISES_API_URL = `${PROD_URL_BASE}/${EXERCISES_ENDPOINT}`;
 
 export class ExercisesAPI {
     static getExercises(username, month, year) {
-        return fetch(`${EXERCISES_ENDPOINT}?month=${month}&year=${year}&username=${username}`);
+        return fetch(`${EXERCISES_API_URL}?month=${month}&year=${year}&username=${username}`);
     }
 }

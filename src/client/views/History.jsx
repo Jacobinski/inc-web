@@ -1,14 +1,17 @@
 import React from "react";
+import Socket from "../socket.js";
+
+import {LoadingIcon} from "../components/LoadingIcon.jsx";
+import DefaultMessage from "../components/DefaultMessage.jsx";
+import Toast from "../components/Toast.jsx";
 import Calendar from "react-calendar";
 import Chart from "chart.js";
-import {SEC_TO_MSEC, PING_INTERVAL_MSEC} from "../constants";
 import {ExercisesAPI} from "../../api/exercises";
 //noinspection JSUnresolvedVariable
 import {FormSelect} from "materialize-css";
-import {LoadingIcon} from "./LoadingIcon.jsx";
 
+import {SEC_TO_MSEC, HOUSES} from "../constants";
 const {Component} = React;
-const HOUSES = ['Stark', 'Lannister', 'Targaryen', 'Baratheon', 'Greyjoy'];
 
 export default class History extends Component {
     static _initForm() {
@@ -36,8 +39,8 @@ export default class History extends Component {
 
                     this.setState({monthData: data, activeDays, username});
                     this._selectDate(date);
-                    this.setState({loading: false});
                 }
+                this.setState({loading: false});
             })
             .catch((error) => {
                 this.setState({error: 'There was an error.'});
@@ -45,9 +48,14 @@ export default class History extends Component {
             });
     }
 
-    componentWillMount() {
+    _onConnect() {
         this._getExercises();
-        this.ping = setInterval(() => this._getExercises(), PING_INTERVAL_MSEC);
+        this.socket.on('update', this._onUpdate);
+    }
+
+    _onUpdate() {
+        new Toast('History updated!');
+        this._getExercises();
     }
 
     constructor(props) {
@@ -66,7 +74,13 @@ export default class History extends Component {
         this._selectDate = this._selectDate.bind(this);
         this._generateID = this._generateID.bind(this);
         this._selectUser = this._selectUser.bind(this);
+        this._onConnect = this._onConnect.bind(this);
+        this._onUpdate = this._onUpdate.bind(this);
+
         this.TILE_CLASS_NAME = 'gym-day';
+        this.DEFAULT_MESSAGE = 'Your completed workouts will show here.  Days where you worked out are highlighted.';
+
+        this.socket = new Socket(this._onConnect);
     }
 
     componentDidMount() {
@@ -78,7 +92,7 @@ export default class History extends Component {
     }
 
     componentWillUnmount() {
-        clearInterval(this.ping);
+        this.socket.close();
     }
 
     _selectUser(e) {
@@ -173,29 +187,10 @@ export default class History extends Component {
                                                 />
                                             )
                                         }
-                                    ) : <DefaultMessage/>}
+                                    ) : <DefaultMessage message={this.DEFAULT_MESSAGE}/>}
                             </div>
                         }
                     </div>
-                </div>
-            </div>
-        );
-    }
-}
-
-class DefaultMessage extends Component {
-    render() {
-        return (
-            <div className="card default-message">
-                <div className="card-content">
-                            <span className="card-title">
-                                If the bar ain't bending <br/>
-                                You just pretending
-                            </span>
-                    <ul>
-                        <li>Your completed workouts will show here.</li>
-                        <li>Days where you worked out are highlighted.</li>
-                    </ul>
                 </div>
             </div>
         );

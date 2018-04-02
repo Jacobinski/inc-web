@@ -33,6 +33,12 @@ const config = {
                         presets: ['react', 'env'] // Transpiles JSX and ES6
                     }
                 }]
+            },
+            {
+                test: /\.(png|jp(e*)g|svg)$/,
+                use: [{
+                    loader: 'url-loader'
+                }]
             }
         ],
 

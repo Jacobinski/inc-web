@@ -1,7 +1,10 @@
 import React from "react";
+import Socket from "../socket.js";
+
 import {LeaderboardsAPI} from "../../api/leaderboards.js";
-import {PING_INTERVAL_MSEC} from "../constants.js";
-import {LoadingIcon} from "./LoadingIcon.jsx";
+import {LoadingIcon} from "../components/LoadingIcon.jsx";
+import DefaultMessage from "../components/DefaultMessage.jsx";
+import Toast from "../components/Toast.jsx";
 
 const {Component} = React;
 
@@ -21,9 +24,14 @@ export default class Leaderboards extends Component {
             });
     }
 
-    componentWillMount() {
+    _onUpdate() {
+        new Toast('Leaderboards updated!');
         this._getLeaderboards();
-        this.ping = setInterval(() => this._getLeaderboards(), PING_INTERVAL_MSEC);
+    }
+
+    _onConnect() {
+        this._getLeaderboards();
+        this.socket.on('update', this._onUpdate);
     }
 
     constructor(props) {
@@ -36,6 +44,10 @@ export default class Leaderboards extends Component {
         this._filterTable = this._filterTable.bind(this);
         this._clearFilter = this._clearFilter.bind(this);
         this._getLeaderboards = this._getLeaderboards.bind(this);
+        this._onConnect = this._onConnect.bind(this);
+        this._onUpdate = this._onUpdate.bind(this);
+
+        this.socket = new Socket(this._onConnect);
     }
 
     componentDidMount() {
@@ -43,7 +55,7 @@ export default class Leaderboards extends Component {
     }
 
     componentWillUnmount() {
-        clearInterval(this.ping);
+        this.socket.close();
     }
 
     _sort(sortby) {
@@ -70,7 +82,6 @@ export default class Leaderboards extends Component {
     _filterTable(e) {
         let filterBy = e.target.value;
         this.setState({filterBy});
-        console.log(this.state.leaderboards);
 
         let table = this.state.leaderboards.filter(
             (item) => {
@@ -93,15 +104,15 @@ export default class Leaderboards extends Component {
         return (
             <div>
                 <h2>Leaderboards</h2>
-
                 <nav>
                     <div className="nav-wrapper teal lighten-2">
-                        <form autoComplete="off">
+                        <form autoComplete="off" onSubmit={(e) => e.preventDefault()}>
                             <div className="input-field">
                                 <input id="search"
                                        type="search"
                                        value={this.state.filterBy}
                                        onChange={(e) => this._filterTable(e)}
+                                       maxLength="20"
                                        placeholder="username"/>
                                 <label className="label-icon" htmlFor="search">
                                     <i className="material-icons">search</i>
@@ -111,30 +122,35 @@ export default class Leaderboards extends Component {
                         </form>
                     </div>
                 </nav>
+
                 {this.state.loading ? <LoadingIcon/> :
-                    <table className="highlight responsive-table">
-                        <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th className="hover-pointer" onClick={(e) => this._sort('reps', e)}>
-                                Reps
-                            </th>
-                            <th className="hover-pointer" onClick={(e) => this._sort('weights', e)}>
-                                Weights
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {this.state.table.map(
-                            (row, index) =>
-                                <tr key={index}>
-                                    <td>{row.username}</td>
-                                    <td>{row.reps}</td>
-                                    <td>{row.weights}</td>
+                    this.state.leaderboards.length ?
+                        this.state.table.length ?
+                            <table className="highlight responsive-table">
+                                <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th className="hover-pointer" onClick={(e) => this._sort('reps', e)}>
+                                        Reps
+                                    </th>
+                                    <th className="hover-pointer" onClick={(e) => this._sort('weights', e)}>
+                                        Weights
+                                    </th>
                                 </tr>
-                        )}
-                        </tbody>
-                    </table>
+                                </thead>
+                                <tbody>
+                                {this.state.table.map(
+                                    (row, index) =>
+                                        <tr key={index}>
+                                            <td>{row.username}</td>
+                                            <td>{row.reps}</td>
+                                            <td>{row.weights} lbs</td>
+                                        </tr>
+                                )}
+                                </tbody>
+                            </table> :
+                            <DefaultMessage message={`No users match '${this.state.filterBy}'`}/> :
+                        <DefaultMessage/>
                 }
             </div>
         );
