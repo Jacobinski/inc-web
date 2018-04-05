@@ -1,6 +1,5 @@
 import React from "react";
 import Socket from "../socket.js";
-
 import {LeaderboardsAPI} from "../../api/leaderboards.js";
 import {LoadingIcon} from "../components/LoadingIcon.jsx";
 import DefaultMessage from "../components/DefaultMessage.jsx";
@@ -17,6 +16,7 @@ export default class Leaderboards extends Component {
                 this.state.leaderboards = jsonData.data;
                 this.state.table = jsonData.data;
                 this.setState({loading: false});
+                this._sort(this.sortBy, false);
             })
             .catch((error) => {
                 this.setState({error: 'There was an error.'});
@@ -50,33 +50,33 @@ export default class Leaderboards extends Component {
         this.socket = new Socket(this._onConnect);
     }
 
-    componentDidMount() {
-        this._sort(this.sortBy);
-    }
-
     componentWillUnmount() {
         this.socket.close();
     }
 
-    _sort(sortby) {
-        // If user clicks on same sortBy, reverse the order
-        if (sortby === this.sortBy) {
-            this.reverseOrder = !this.reverseOrder;
-        }
-        this.sortBy = sortby;
-
-        let table = this.state.table;
-        table.sort(
-            (a, b) => {
-                if (a[sortby] < b[sortby]) return 1;
-                if (a[sortby] > b[sortby]) return -1;
-                return 0;
+    _sort(sortby, enableReverse = true) {
+        if (sortby) {
+            // If user clicks on same sortBy, reverse the order
+            if (sortby === this.sortBy && enableReverse) {
+                this.reverseOrder = !this.reverseOrder;
             }
-        );
+            else {
+                this.sortBy = sortby;
+            }
 
-        if (this.reverseOrder) table.reverse();
+            let table = this.state.table;
+            table.sort(
+                (a, b) => {
+                    if (a[sortby] < b[sortby]) return 1;
+                    if (a[sortby] > b[sortby]) return -1;
+                    return 0;
+                }
+            );
 
-        this.setState(table);
+            if (this.reverseOrder) table.reverse();
+
+            this.setState(table);
+        }
     }
 
     _filterTable(e) {
@@ -131,10 +131,22 @@ export default class Leaderboards extends Component {
                                 <tr>
                                     <th>Username</th>
                                     <th className="hover-pointer" onClick={(e) => this._sort('reps', e)}>
-                                        Reps
+                                        <span className={`${this.sortBy === 'reps' ? 'red-text' : ''} no-select`}>
+                                            Reps {this.sortBy === 'reps' ?
+                                            this.reverseOrder ?
+                                                <i className="fa fa-chevron-down"/> :
+                                                <i className="fa fa-chevron-up"/> :
+                                            <i className="fa fa-hand-pointer"/> }
+                                        </span>
                                     </th>
                                     <th className="hover-pointer" onClick={(e) => this._sort('weights', e)}>
-                                        Weights
+                                        <span className={`${this.sortBy === 'weights' ? 'red-text' : ''} no-select`}>
+                                            Weights {this.sortBy === 'weights' ?
+                                            this.reverseOrder ?
+                                                <i className="fa fa-chevron-down"/> :
+                                                <i className="fa fa-chevron-up"/> :
+                                            <i className="fa fa-hand-pointer"/>}
+                                        </span>
                                     </th>
                                 </tr>
                                 </thead>

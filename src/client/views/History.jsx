@@ -20,7 +20,7 @@ export default class History extends Component {
     }
 
     _getExercises() {
-        this.setState({loading: true});
+        this.setState({loading: true, monthData: [], dayData: [], activeDays: []});
         let date = this.state.date;
         ExercisesAPI.getExercises(this.state.username, date.getMonth() + 1, date.getFullYear())
             .then(response => response.json())
@@ -212,7 +212,7 @@ class ExerciseData extends Component {
     }
 
     static _average(array) {
-        return ExerciseData._sum(array) / array.length;
+        return Math.round(ExerciseData._sum(array) / array.length * 100) / 100;
     }
 
     _toggleClass() {
